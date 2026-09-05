@@ -63,15 +63,23 @@ function App() {
         onChange={(event) => setSearch(event.target.value)}
       />
 
-      {search && (
-        <div>
-          {searchResults.length > 0 ? (
-            searchResults.map((item) => (
-              <div key={item.id}>
-                <strong>{item.name}</strong>
-                <p>{item.location}</p>
-              </div>
-            ))
+{search && (
+
+<div className="search-results">
+
+  {searchResults.length > 0 ? (
+
+    searchResults.map((item) => (
+
+      <div className="search-result" key={item.id}>
+
+        <strong>{item.name}</strong>
+
+        <p>{item.location}</p>
+
+      </div>
+
+    ))
           ) : (
             <p>No matching items found.</p>
           )}

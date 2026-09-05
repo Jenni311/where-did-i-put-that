@@ -250,3 +250,13 @@ main > input + button {
   color: #68707d;
   font-weight: 400;
 }
+.search-results {
+
+  margin-top: 10px;
+
+}.search-result p {
+
+  margin: 2px;
+  margin-bottom: 16px;
+
+}
