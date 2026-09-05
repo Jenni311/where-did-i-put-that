@@ -12,6 +12,7 @@ function App() {
   const [search, setSearch] = useState('')
   const [showAll, setShowAll] = useState(false)
   const [showRememberForm, setShowRememberForm] = useState(false)
+  const [openItemId, setOpenItemId] = useState<number | null>(null)
 
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
@@ -78,11 +79,12 @@ function App() {
       )}
 
       <button onClick={() => setShowRememberForm(!showRememberForm)}>
-        {showRememberForm ? 'Hide' : '+     Remember a new item'}
+        {showRememberForm ? 'Hide' : '+ Remember a new item'}
       </button>
 
       {showRememberForm && (
         <div>
+          <h2>Remember something</h2>
 
           <label>
             What is it?
@@ -119,12 +121,26 @@ function App() {
           {items.length === 0 ? (
             <p>No items saved yet.</p>
           ) : (
-            items.map((item) => (
-              <div key={item.id}>
-                <strong>{item.name}</strong>
-                <p>{item.location}</p>
-              </div>
-            ))
+            <div className="saved-items-list">
+              {items.map((item) => (
+                <button
+                  className="saved-item"
+                  key={item.id}
+                  onClick={() =>
+                    setOpenItemId(openItemId === item.id ? null : item.id)
+                  }
+                >
+                  <div className="saved-item-top">
+                    <strong>{item.name}</strong>
+                    <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
+                  </div>
+
+                  {openItemId === item.id && (
+                    <p className="saved-item-location">{item.location}</p>
+                  )}
+                </button>
+              ))}
+            </div>
           )}
         </div>
       )}
