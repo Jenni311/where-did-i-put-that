@@ -78,7 +78,7 @@ function App() {
       )}
 
       <button onClick={() => setShowRememberForm(!showRememberForm)}>
-        {showRememberForm ? 'Hide' : '+ Remember something'}
+        {showRememberForm ? 'Hide' : '+     Remember a new item'}
       </button>
 
       {showRememberForm && (
