@@ -86,9 +86,12 @@ function App() {
         </div>
       )}
 
-      <button onClick={() => setShowRememberForm(!showRememberForm)}>
-        {showRememberForm ? 'Hide' : '+ Remember a new item'}
-      </button>
+<button
+  className="remember-button"
+  onClick={() => setShowRememberForm(!showRememberForm)}
+>
+  {showRememberForm ? 'Hide' : '+ Remember a new item'}
+</button>
 
       {showRememberForm && (
         <div>
@@ -118,7 +121,13 @@ function App() {
         </div>
       )}
 
-      <button onClick={() => setShowAll(!showAll)}>
+<button
+
+className="view-all-button"
+
+onClick={() => setShowAll(!showAll)}
+
+>
         {showAll ? 'Hide saved items' : 'View all saved items'}
       </button>
 

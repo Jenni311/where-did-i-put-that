@@ -157,9 +157,9 @@ button {
 
   border-radius: 12px;
 
-  margin-top: 16px;
+  margin-top: 0px;
 
-  margin-bottom: -4px;
+  margin-bottom: 0px;
 
   padding: 14px 18px;
 
@@ -191,35 +191,15 @@ button:active {
 
 }
 
-main > button:last-of-type {
-
-  margin-top: 24px;
-
-  background: white;
-
-  color: #111827;
-
-  border: 2px solid #d5d9df;
-
-}
 
 
 
 @media (min-width: 700px) {
-
   main {
-
     padding-top: 56px;
-
   }
-
 }
-main > input + button {
 
-  margin-top: 35px;
-  margin-bottom: 10px;
-
-}
 .saved-items-list {
   display: flex;
   flex-direction: column;
@@ -252,13 +232,25 @@ main > input + button {
   color: #68707d;
   font-weight: 400;
 }
+
 .search-results {
-
   margin-top: 6px;
-
 }
+
 .search-result p {
-
   margin: 4px 0 0;
+}
 
+.remember-button {
+  margin-top: 24px;
+}
+.remember-button {
+  margin-top: 24px;
+}
+
+.view-all-button {
+  margin-top: 12px;
+  background: white;
+  color: #111827;
+  border: 2px solid #d5d9df;
 }
