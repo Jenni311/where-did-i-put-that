@@ -11,6 +11,7 @@ function App() {
   const [location, setLocation] = useState('')
   const [search, setSearch] = useState('')
   const [showAll, setShowAll] = useState(false)
+  const [showRememberForm, setShowRememberForm] = useState(false)
 
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
@@ -40,6 +41,7 @@ function App() {
     setItems([...items, newItem])
     setItemName('')
     setLocation('')
+    setShowRememberForm(false)
   }
 
   const searchResults = items.filter((item) =>
@@ -75,32 +77,36 @@ function App() {
         </div>
       )}
 
-      <h2>Remember something</h2>
+      <button onClick={() => setShowRememberForm(!showRememberForm)}>
+        {showRememberForm ? 'Hide' : '+ Remember something'}
+      </button>
 
-      <label>
-        What is it?
-        <input
-          type="text"
-          placeholder="e.g. Passport"
-          value={itemName}
-          onChange={(event) => setItemName(event.target.value)}
-        />
-      </label>
+      {showRememberForm && (
+        <div>
 
-      <label>
-        Where did you put it?
-        <input
-          type="text"
-          placeholder="e.g. Blue box in bedroom wardrobe"
-          value={location}
-          onChange={(event) => setLocation(event.target.value)}
-        />
-      </label>
+          <label>
+            What is it?
+            <input
+              type="text"
+              placeholder="e.g. Passport"
+              value={itemName}
+              onChange={(event) => setItemName(event.target.value)}
+            />
+          </label>
 
-      <button onClick={saveItem}>Save item</button>
+          <label>
+            Where did you put it?
+            <input
+              type="text"
+              placeholder="e.g. Blue box in bedroom wardrobe"
+              value={location}
+              onChange={(event) => setLocation(event.target.value)}
+            />
+          </label>
 
-
-      
+          <button onClick={saveItem}>Save item</button>
+        </div>
+      )}
 
       <button onClick={() => setShowAll(!showAll)}>
         {showAll ? 'Hide saved items' : 'View all saved items'}
