@@ -254,3 +254,8 @@ button:active {
   color: #111827;
   border: 2px solid #d5d9df;
 }
+.remember-form {
+
+  padding-top: 24px;
+
+}

@@ -87,17 +87,22 @@ function App() {
       )}
 
 <button
+
   className="remember-button"
+
   onClick={() => setShowRememberForm(!showRememberForm)}
+
 >
-  {showRememberForm ? 'Hide' : '+ Remember a new item'}
+
+  {showRememberForm ? 'Hide' : '+ Add a new item'}
+
 </button>
 
-      {showRememberForm && (
-        <div>
-          <h2>Remember something</h2>
+{showRememberForm && (
 
-          <label>
+  <div className="remember-form">
+
+    <label>
             What is it?
             <input
               type="text"
