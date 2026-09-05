@@ -117,7 +117,7 @@ input {
 
   padding: 14px 15px;
 
-  border: 1px solid #d5d9df;
+  border: 2px solid #d5d9df;
 
   border-radius: 12px;
 
@@ -153,7 +153,7 @@ button {
 
   width: 100%;
 
-  border: 8px;
+  border: 0;
 
   border-color: #5367d8;
 
@@ -197,7 +197,7 @@ main > button:last-of-type {
 
   color: #111827;
 
-  border: 1px solid #d5d9df;
+  border: 2px solid #d5d9df;
 
 }
 
