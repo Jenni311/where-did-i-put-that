@@ -1,0 +1,129 @@
+import { useEffect, useState } from 'react'
+
+type StoredItem = {
+  id: number
+  name: string
+  location: string
+}
+
+function App() {
+  const [itemName, setItemName] = useState('')
+  const [location, setLocation] = useState('')
+  const [search, setSearch] = useState('')
+  const [showAll, setShowAll] = useState(false)
+
+  const [items, setItems] = useState<StoredItem[]>(() => {
+    const savedItems = localStorage.getItem('storedItems')
+
+    if (savedItems) {
+      return JSON.parse(savedItems)
+    }
+
+    return []
+  })
+
+  useEffect(() => {
+    localStorage.setItem('storedItems', JSON.stringify(items))
+  }, [items])
+
+  function saveItem() {
+    if (!itemName.trim() || !location.trim()) {
+      return
+    }
+
+    const newItem: StoredItem = {
+      id: Date.now(),
+      name: itemName,
+      location: location,
+    }
+
+    setItems([...items, newItem])
+    setItemName('')
+    setLocation('')
+  }
+
+  const searchResults = items.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  )
+
+  return (
+    <main>
+      <h1>Where Did I Put That?</h1>
+      <p>Save where you put things so you can find them later.</p>
+
+      <h2>Find something</h2>
+
+      <input
+        type="text"
+        placeholder="Search for an item..."
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+      />
+
+      {search && (
+        <div>
+          {searchResults.length > 0 ? (
+            searchResults.map((item) => (
+              <div key={item.id}>
+                <strong>{item.name}</strong>
+                <p>{item.location}</p>
+              </div>
+            ))
+          ) : (
+            <p>No matching items found.</p>
+          )}
+        </div>
+      )}
+
+      <h2>Remember something</h2>
+
+      <label>
+        What is it?
+        <input
+          type="text"
+          placeholder="e.g. Passport"
+          value={itemName}
+          onChange={(event) => setItemName(event.target.value)}
+        />
+      </label>
+
+      <label>
+        Where did you put it?
+        <input
+          type="text"
+          placeholder="e.g. Blue box in bedroom wardrobe"
+          value={location}
+          onChange={(event) => setLocation(event.target.value)}
+        />
+      </label>
+
+      <button onClick={saveItem}>Save item</button>
+
+
+      
+
+      <button onClick={() => setShowAll(!showAll)}>
+        {showAll ? 'Hide saved items' : 'View all saved items'}
+      </button>
+
+      {showAll && (
+        <div>
+          <h2>All saved items</h2>
+
+          {items.length === 0 ? (
+            <p>No items saved yet.</p>
+          ) : (
+            items.map((item) => (
+              <div key={item.id}>
+                <strong>{item.name}</strong>
+                <p>{item.location}</p>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </main>
+  )
+}
+
+export default App
