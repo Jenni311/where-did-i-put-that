@@ -15,6 +15,7 @@
   color: #1f2933;
 
   background: #FAF6F0;
+  /*background: #FFFBEA*/
 
 }
 
@@ -33,6 +34,8 @@ body {
   min-height: 100vh;
 
   background: #FAF6F0;
+  /*background: #FFFBEA*/
+
 
 }
 
@@ -164,8 +167,9 @@ button {
 
   padding: 14px 18px;
 
- /* background: #0e8aa0;*/
- background: #8D6E63;
+ /* background: #0e8aa0;
+ background: #8D6E63;*/
+ background: #738478;
 
   color: white;
 
