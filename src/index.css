@@ -168,8 +168,9 @@ button {
   padding: 14px 18px;
 
  /* background: #0e8aa0;
- background: #8D6E63;*/
- background: #738478;
+ background: #8D6E63;
+ background: #738478;*/
+ background: #f67f7f;
 
   color: white;
 
@@ -256,8 +257,9 @@ button:active {
 
 .view-all-button {
   margin-top: 12px;
-  /*background: rgb(133, 68, 133);*/
-  background: #f67f7f;
+  /*background: rgb(133, 68, 133);
+  background: #f67f7f;*/
+  background: #738478;
   color: white;
   border: 0 solid #d5d9df;
   border-color: white;
