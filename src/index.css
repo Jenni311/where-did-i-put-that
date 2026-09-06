@@ -250,9 +250,10 @@ button:active {
 
 .view-all-button {
   margin-top: 12px;
-  background: white;
-  color: #111827;
-  border: 2px solid #d5d9df;
+  background: rgb(133, 68, 133);
+  color: white;
+  border: 0 solid #d5d9df;
+  border-color: white;
 }
 .remember-form {
 
