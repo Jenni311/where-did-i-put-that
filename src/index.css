@@ -14,7 +14,7 @@
 
   color: #1f2933;
 
-  background: #fcf8f4;
+  background: #FAF6F0;
 
 }
 
@@ -32,7 +32,7 @@ body {
 
   min-height: 100vh;
 
-  background: #fcf8f4;
+  background: #FAF6F0;
 
 }
 
@@ -68,7 +68,7 @@ h1 {
 
   letter-spacing: -0.04em;
 
-  color: #111827;
+  color: #3E2723;
 
 
 }
@@ -164,7 +164,8 @@ button {
 
   padding: 14px 18px;
 
-  background: #0e8aa0;
+ /* background: #0e8aa0;*/
+ background: #8D6E63;
 
   color: white;
 
@@ -251,7 +252,8 @@ button:active {
 
 .view-all-button {
   margin-top: 12px;
-  background: rgb(133, 68, 133);
+  /*background: rgb(133, 68, 133);*/
+  background: #f67f7f;
   color: white;
   border: 0 solid #d5d9df;
   border-color: white;
