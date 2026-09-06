@@ -54,7 +54,7 @@ function App() {
       <h1>Where Did I Put That?</h1>
       <p>Save where you put things so you can find them later.</p>
 
-      <h2>Find something</h2>
+      <h2>Find something...</h2>
 
       <input
         type="text"
