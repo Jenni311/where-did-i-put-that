@@ -104,7 +104,7 @@ label {
 
   margin-bottom: 16px;
 
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 
   font-weight: 600;
 
@@ -445,7 +445,7 @@ button:active {
   align-items: center;
 }.saved-item-open .saved-item-details {
   padding-top: 0;
-  
+
 }.saved-item {
   scroll-margin-top: 20px;
 }
