@@ -405,3 +405,7 @@ button:active {
   background: #1ca3f2;
   color: white;
 }
+.saved-item-toggle {
+  min-height: 44px;
+  padding: 10px 16px;
+}
