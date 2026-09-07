@@ -53,7 +53,7 @@ main {
 
   margin: 0 auto;
 
-  padding: calc(70px + env(safe-area-inset-top)) 20px 48px;
+  padding: 70px 20px 48px;
 }
 
 h1 {

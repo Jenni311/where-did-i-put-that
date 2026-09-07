@@ -36,7 +36,9 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
 
     return []
   })
-
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   useEffect(() => {
     localStorage.setItem('storedItems', JSON.stringify(items))
   }, [items])
