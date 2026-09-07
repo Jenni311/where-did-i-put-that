@@ -37,7 +37,26 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
     return []
   })
   useEffect(() => {
-    window.scrollTo(0, 0)
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+  
+    const scrollToTop = () => {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+    }
+  
+    scrollToTop()
+  
+    const timer = window.setTimeout(scrollToTop, 150)
+  
+    window.addEventListener('pageshow', scrollToTop)
+  
+    return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('pageshow', scrollToTop)
+    }
   }, [])
   useEffect(() => {
     localStorage.setItem('storedItems', JSON.stringify(items))
