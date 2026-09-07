@@ -74,6 +74,25 @@ function App() {
   
     reader.readAsDataURL(file)
   }
+  async function deleteItem(item: StoredItem) {
+    const confirmed = window.confirm(
+      `Delete ${item.name || 'this item'}?`
+    )
+  
+    if (!confirmed) {
+      return
+    }
+  
+    const updatedItems = items.filter((savedItem) => savedItem.id !== item.id)
+  
+    setItems(updatedItems)
+  
+    if (openItemId === item.id) {
+      setOpenItemId(null)
+      setOpenItemPhoto(null)
+      setOpenLocationPhoto(null)
+    }
+  }
   async function saveItem() {
     if ((!itemName.trim() && !itemPhoto) || (!location.trim() && !locationPhoto)) {
       return
@@ -320,7 +339,7 @@ onClick={() => setShowAll(!showAll)}
 
   <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
 </div>
-                  {openItemId === item.id && (
+{openItemId === item.id && (
   <div className="saved-item-details">
     {openItemPhoto && (
       <img
@@ -341,6 +360,16 @@ onClick={() => setShowAll(!showAll)}
         alt="Saved location"
       />
     )}
+
+    <button
+      className="delete-button"
+      onClick={(event) => {
+        event.stopPropagation()
+        deleteItem(item)
+      }}
+    >
+      Delete
+    </button>
   </div>
 )}
                 </button>
