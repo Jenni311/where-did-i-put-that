@@ -37,26 +37,6 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
     return []
   })
   useEffect(() => {
-    const resetScroll = () => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'instant',
-      })
-    }
-  
-    resetScroll()
-  
-    window.addEventListener('load', resetScroll)
-  
-    const timer = window.setTimeout(resetScroll, 500)
-  
-    return () => {
-      window.removeEventListener('load', resetScroll)
-      window.clearTimeout(timer)
-    }
-  }, [])
-  useEffect(() => {
     localStorage.setItem('storedItems', JSON.stringify(items))
   }, [items])
 
@@ -328,64 +308,88 @@ setLocationPhoto(null)
       )}
 
 <button
+  className="view-all-button"
+  onClick={() => {
+    const opening = !showAll
 
-className="view-all-button"
+    setShowAll(opening)
 
-onClick={() => setShowAll(!showAll)}
-
+    if (opening) {
+      setTimeout(() => {
+        document
+          .getElementById('all-saved-items')
+          ?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
+      }, 100)
+    }
+  }}
 >
-        {showAll ? 'Hide saved items' : 'View all saved items'}
-      </button>
+  {showAll ? 'Hide saved items' : 'View all saved items'}
+</button>
 
       {showAll && (
-        <div>
+          <div id="all-saved-items">
           <h2>All saved items</h2>
 
           {items.length === 0 ? (
             <p>No items saved yet.</p>
           ) : (
-            <div className="saved-items-list">
-            {items.map((item) => (
-              <div
-  className={`saved-item ${openItemId === item.id ? 'saved-item-open' : ''}`}
-  key={item.id}
->          
-                <button
-                  className="saved-item-toggle"
-                  onClick={async () => {
-                    if (openItemId === item.id) {
-                      setOpenItemId(null)
-                      setOpenItemPhoto(null)
-                      setOpenLocationPhoto(null)
-                      return
-                    }
-          
-                    setOpenItemId(item.id)
-          
-                    const savedItemPhoto = item.itemPhotoKey
-                      ? await getFromDatabase<string>(item.itemPhotoKey)
-                      : null
-          
-                    const savedLocationPhoto = item.locationPhotoKey
-                      ? await getFromDatabase<string>(item.locationPhotoKey)
-                      : null
-          
-                    setOpenItemPhoto(savedItemPhoto)
-                    setOpenLocationPhoto(savedLocationPhoto)
-                  }}
-                >
-                  <div className="saved-item-top">
-                    <div className="saved-item-title">
-                      {itemThumbnails[item.id] && (
-                        <img
-                          className="saved-item-thumbnail"
-                          src={itemThumbnails[item.id]}
-                          alt=""
-                        />
-                      )}
-          
-                      {item.name && <strong>{item.name}</strong>}
-                    </div>
+<div className="saved-items-list">
+  {items.map((item) => (
+    <div
+      id={`saved-item-${item.id}`}
+      className={`saved-item ${
+        openItemId === item.id ? 'saved-item-open' : ''
+      }`}
+      key={item.id}
+    >
+      <button
+        className="saved-item-toggle"
+        onClick={async () => {
+          if (openItemId === item.id) {
+            setOpenItemId(null)
+            setOpenItemPhoto(null)
+            setOpenLocationPhoto(null)
+            return
+          }
+
+          setOpenItemId(item.id)
+
+requestAnimationFrame(() => {
+  document
+    .getElementById(`saved-item-${item.id}`)
+    ?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+})
+
+const savedItemPhoto = item.itemPhotoKey
+  ? await getFromDatabase<string>(item.itemPhotoKey)
+  : null
+
+const savedLocationPhoto = item.locationPhotoKey
+  ? await getFromDatabase<string>(item.locationPhotoKey)
+  : null
+
+setOpenItemPhoto(savedItemPhoto)
+setOpenLocationPhoto(savedLocationPhoto)
+}}
+>
+        <div className="saved-item-top">
+          <div className="saved-item-title">
+            {itemThumbnails[item.id] && (
+              <img
+                className="saved-item-thumbnail"
+                src={itemThumbnails[item.id]}
+                alt=""
+              />
+            )}
+
+            {item.name && <strong>{item.name}</strong>}
+          </div>
           
                     <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
                   </div>
@@ -498,15 +502,24 @@ onClick={() => setShowAll(!showAll)}
           {editingItemId !== item.id && (
   <div className="item-actions">
     <button
-      className="edit-button"
-      onClick={() => {
-        setEditingItemId(item.id)
-        setEditName(item.name)
-        setEditLocation(item.location)
-      }}
-    >
-      Edit
-    </button>
+  className="edit-button"
+  onClick={() => {
+    setEditingItemId(item.id)
+    setEditName(item.name)
+    setEditLocation(item.location)
+
+    requestAnimationFrame(() => {
+      document
+        .getElementById(`saved-item-${item.id}`)
+        ?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+    })
+  }}
+>
+  Edit
+</button>
 
     <button
       className="delete-button"
