@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
+import { getFromDatabase, saveToDatabase } from './db'
 
 type StoredItem = {
   id: number
   name: string
   location: string
+  itemPhotoKey?: string
+  locationPhotoKey?: string
 }
 
 function App() {
@@ -13,8 +16,11 @@ function App() {
   const [showAll, setShowAll] = useState(false)
   const [showRememberForm, setShowRememberForm] = useState(false)
   const [openItemId, setOpenItemId] = useState<number | null>(null)
+  const [openItemPhoto, setOpenItemPhoto] = useState<string | null>(null)
+  const [openLocationPhoto, setOpenLocationPhoto] = useState<string | null>(null)
   const [itemPhoto, setItemPhoto] = useState<string | null>(null)
   const [locationPhoto, setLocationPhoto] = useState<string | null>(null)
+  const [itemThumbnails, setItemThumbnails] = useState<Record<number, string>>({})
 
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
@@ -28,6 +34,26 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('storedItems', JSON.stringify(items))
+  }, [items])
+
+  useEffect(() => {
+    async function loadThumbnails() {
+      const thumbnails: Record<number, string> = {}
+  
+      for (const item of items) {
+        if (item.itemPhotoKey) {
+          const photo = await getFromDatabase<string>(item.itemPhotoKey)
+  
+          if (photo) {
+            thumbnails[item.id] = photo
+          }
+        }
+      }
+  
+      setItemThumbnails(thumbnails)
+    }
+  
+    loadThumbnails()
   }, [items])
 
   function handlePhotoChange(
@@ -48,20 +74,37 @@ function App() {
   
     reader.readAsDataURL(file)
   }
-  function saveItem() {
-    if (!itemName.trim() || !location.trim()) {
+  async function saveItem() {
+    if ((!itemName.trim() && !itemPhoto) || (!location.trim() && !locationPhoto)) {
       return
     }
 
-    const newItem: StoredItem = {
-      id: Date.now(),
-      name: itemName,
-      location: location,
-    }
+    const id = Date.now()
+
+const itemPhotoKey = itemPhoto ? `item-photo-${id}` : undefined
+const locationPhotoKey = locationPhoto ? `location-photo-${id}` : undefined
+
+if (itemPhotoKey && itemPhoto) {
+  await saveToDatabase(itemPhotoKey, itemPhoto)
+}
+
+if (locationPhotoKey && locationPhoto) {
+  await saveToDatabase(locationPhotoKey, locationPhoto)
+}
+
+const newItem: StoredItem = {
+  id,
+  name: itemName,
+  location: location,
+  itemPhotoKey,
+  locationPhotoKey,
+}
 
     setItems([...items, newItem])
     setItemName('')
     setLocation('')
+    setItemPhoto(null)
+setLocationPhoto(null)
     setShowRememberForm(false)
   }
 
@@ -240,18 +283,66 @@ onClick={() => setShowAll(!showAll)}
                 <button
                   className="saved-item"
                   key={item.id}
-                  onClick={() =>
-                    setOpenItemId(openItemId === item.id ? null : item.id)
-                  }
+                  onClick={async () => {
+                    if (openItemId === item.id) {
+                      setOpenItemId(null)
+                      setOpenItemPhoto(null)
+                      setOpenLocationPhoto(null)
+                      return
+                    }
+                  
+                    setOpenItemId(item.id)
+                  
+                    const savedItemPhoto = item.itemPhotoKey
+                      ? await getFromDatabase<string>(item.itemPhotoKey)
+                      : null
+                  
+                    const savedLocationPhoto = item.locationPhotoKey
+                      ? await getFromDatabase<string>(item.locationPhotoKey)
+                      : null
+                  
+                    setOpenItemPhoto(savedItemPhoto)
+                    setOpenLocationPhoto(savedLocationPhoto)
+                  }}
                 >
-                  <div className="saved-item-top">
-                    <strong>{item.name}</strong>
-                    <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
-                  </div>
+                 <div className="saved-item-top">
+  <div className="saved-item-title">
+    {itemThumbnails[item.id] && (
+      <img
+        className="saved-item-thumbnail"
+        src={itemThumbnails[item.id]}
+        alt=""
+      />
+    )}
 
+    {item.name && <strong>{item.name}</strong>}
+  </div>
+
+  <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
+</div>
                   {openItemId === item.id && (
-                    <p className="saved-item-location">{item.location}</p>
-                  )}
+  <div className="saved-item-details">
+    {openItemPhoto && (
+      <img
+        className="saved-item-photo"
+        src={openItemPhoto}
+        alt={item.name || 'Saved item'}
+      />
+    )}
+
+    {item.location && (
+      <p className="saved-item-location">{item.location}</p>
+    )}
+
+    {openLocationPhoto && (
+      <img
+        className="saved-item-photo"
+        src={openLocationPhoto}
+        alt="Saved location"
+      />
+    )}
+  </div>
+)}
                 </button>
               ))}
             </div>
