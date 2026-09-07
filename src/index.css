@@ -53,8 +53,7 @@ main {
 
   margin: 0 auto;
 
-  padding: 70px 20px 48px;
-
+  padding: calc(70px + env(safe-area-inset-top)) 20px 48px;
 }
 
 h1 {
@@ -444,4 +443,6 @@ button:active {
   flex: 1;
   justify-content: center;
   align-items: center;
+}.saved-item-open .saved-item-details {
+  padding-top: 0;
 }
