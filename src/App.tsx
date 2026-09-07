@@ -196,20 +196,32 @@ setLocationPhoto(null)
       )}
 
 <button
-
   className="remember-button"
+  onClick={() => {
+    const opening = !showRememberForm
 
-  onClick={() => setShowRememberForm(!showRememberForm)}
+    setShowRememberForm(opening)
 
+    if (opening) {
+      setTimeout(() => {
+        document
+          .getElementById('remember-form')
+          ?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
+      }, 100)
+    }
+  }}
 >
-
   {showRememberForm ? 'Hide' : '+ Add a new item'}
-
 </button>
 
 {showRememberForm && (
-
-  <div className="remember-form">
+  <div
+    id="remember-form"
+    className="remember-form"
+  >
 
 <label>
   What is it?
