@@ -102,25 +102,41 @@ function App() {
 
   <div className="remember-form">
 
-    <label>
-            What is it?
-            <input
-              type="text"
-              placeholder="e.g. Passport"
-              value={itemName}
-              onChange={(event) => setItemName(event.target.value)}
-            />
-          </label>
+<label>
+  What is it?
+  <input
+    type="text"
+    placeholder="e.g. Passport"
+    value={itemName}
+    onChange={(event) => setItemName(event.target.value)}
+  />
+</label>
 
-          <label>
-            Where did you put it?
-            <input
-              type="text"
-              placeholder="e.g. Blue box in bedroom wardrobe"
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
-            />
-          </label>
+<label className="photo-label">
+  Or add a photo of the item
+  <input
+    type="file"
+    accept="image/*"
+  />
+</label>
+
+<label>
+  Where did you put it?
+  <input
+    type="text"
+    placeholder="e.g. Blue box in bedroom wardrobe"
+    value={location}
+    onChange={(event) => setLocation(event.target.value)}
+  />
+</label>
+
+<label className="photo-label">
+  Or add a photo of the place
+  <input
+    type="file"
+    accept="image/*"
+  />
+</label>
 
           <button onClick={saveItem}>Save item</button>
         </div>
