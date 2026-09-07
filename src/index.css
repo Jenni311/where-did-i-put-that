@@ -241,6 +241,7 @@ button:active {
   margin: 0px 0 0;
   color: #68707d;
   font-weight: 400;
+  font-size: 1rem;
 }
 
 .search-results {
