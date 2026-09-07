@@ -327,8 +327,10 @@ onClick={() => setShowAll(!showAll)}
           ) : (
             <div className="saved-items-list">
             {items.map((item) => (
-              <div className="saved-item" key={item.id}>
-          
+              <div
+  className={`saved-item ${openItemId === item.id ? 'saved-item-open' : ''}`}
+  key={item.id}
+>          
                 <button
                   className="saved-item-toggle"
                   onClick={async () => {

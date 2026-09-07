@@ -212,9 +212,9 @@ button:active {
 }
 
 .saved-items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   margin-top: 12px;
 }
 
@@ -239,7 +239,7 @@ button:active {
 }
 
 .saved-item-location {
-  margin: 10px 0 0;
+  margin: 0px 0 0;
   color: #68707d;
   font-weight: 400;
 }
@@ -310,8 +310,8 @@ button:active {
 }
 
 .saved-item-thumbnail {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   object-fit: cover;
   border-radius: 10px;
   flex-shrink: 0;
@@ -333,7 +333,9 @@ button:active {
 .saved-item-toggle {
   width: 100%;
   margin: 0;
-  padding: 16px;
+  min-height: 64px;
+  padding: 10px 12px;
+
   background: transparent;
   color: #111827;
   border: 0;
@@ -418,4 +420,28 @@ button:active {
   background: #ffb176;
   color: #ffffff;
   border-color: #d5d0c8;
+}.saved-item-open {
+  grid-column: 1 / -1;
+}.saved-item:not(.saved-item-open) {
+  height: 60px;
+}
+
+.saved-item:not(.saved-item-open) .saved-item-toggle {
+  height: 100%;
+  min-height: 0;
+}.saved-item:not(.saved-item-open) .saved-item-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-item:not(.saved-item-open) .saved-item-top {
+  width: 100%;
+  align-items: center;
+}
+
+.saved-item:not(.saved-item-open) .saved-item-title {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 }
