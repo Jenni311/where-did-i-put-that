@@ -21,6 +21,9 @@ function App() {
   const [itemPhoto, setItemPhoto] = useState<string | null>(null)
   const [locationPhoto, setLocationPhoto] = useState<string | null>(null)
   const [itemThumbnails, setItemThumbnails] = useState<Record<number, string>>({})
+  const [editingItemId, setEditingItemId] = useState<number | null>(null)
+  const [editName, setEditName] = useState('')
+  const [editLocation, setEditLocation] = useState('')
 
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
@@ -83,7 +86,9 @@ function App() {
       return
     }
   
-    const updatedItems = items.filter((savedItem) => savedItem.id !== item.id)
+    const updatedItems = items.filter(
+      (savedItem) => savedItem.id !== item.id
+    )
   
     setItems(updatedItems)
   
@@ -92,6 +97,27 @@ function App() {
       setOpenItemPhoto(null)
       setOpenLocationPhoto(null)
     }
+  }
+  
+  function saveEditedItem() {
+    if (editingItemId === null) {
+      return
+    }
+  
+    const updatedItems = items.map((item) =>
+      item.id === editingItemId
+        ? {
+            ...item,
+            name: editName,
+            location: editLocation,
+          }
+        : item
+    )
+  
+    setItems(updatedItems)
+    setEditingItemId(null)
+    setEditName('')
+    setEditLocation('')
   }
   async function saveItem() {
     if ((!itemName.trim() && !itemPhoto) || (!location.trim() && !locationPhoto)) {
@@ -298,10 +324,11 @@ onClick={() => setShowAll(!showAll)}
             <p>No items saved yet.</p>
           ) : (
             <div className="saved-items-list">
-              {items.map((item) => (
+            {items.map((item) => (
+              <div className="saved-item" key={item.id}>
+          
                 <button
-                  className="saved-item"
-                  key={item.id}
+                  className="saved-item-toggle"
                   onClick={async () => {
                     if (openItemId === item.id) {
                       setOpenItemId(null)
@@ -309,75 +336,129 @@ onClick={() => setShowAll(!showAll)}
                       setOpenLocationPhoto(null)
                       return
                     }
-                  
+          
                     setOpenItemId(item.id)
-                  
+          
                     const savedItemPhoto = item.itemPhotoKey
                       ? await getFromDatabase<string>(item.itemPhotoKey)
                       : null
-                  
+          
                     const savedLocationPhoto = item.locationPhotoKey
                       ? await getFromDatabase<string>(item.locationPhotoKey)
                       : null
-                  
+          
                     setOpenItemPhoto(savedItemPhoto)
                     setOpenLocationPhoto(savedLocationPhoto)
                   }}
                 >
-                 <div className="saved-item-top">
-  <div className="saved-item-title">
-    {itemThumbnails[item.id] && (
-      <img
-        className="saved-item-thumbnail"
-        src={itemThumbnails[item.id]}
-        alt=""
-      />
-    )}
-
-    {item.name && <strong>{item.name}</strong>}
-  </div>
-
-  <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
-</div>
-{openItemId === item.id && (
-  <div className="saved-item-details">
-    {openItemPhoto && (
-      <img
-        className="saved-item-photo"
-        src={openItemPhoto}
-        alt={item.name || 'Saved item'}
-      />
-    )}
-
-    {item.location && (
-      <p className="saved-item-location">{item.location}</p>
-    )}
-
-    {openLocationPhoto && (
-      <img
-        className="saved-item-photo"
-        src={openLocationPhoto}
-        alt="Saved location"
-      />
-    )}
-
-    <button
-      className="delete-button"
-      onClick={(event) => {
-        event.stopPropagation()
-        deleteItem(item)
-      }}
-    >
-      Delete
-    </button>
-  </div>
-)}
+                  <div className="saved-item-top">
+                    <div className="saved-item-title">
+                      {itemThumbnails[item.id] && (
+                        <img
+                          className="saved-item-thumbnail"
+                          src={itemThumbnails[item.id]}
+                          alt=""
+                        />
+                      )}
+          
+                      {item.name && <strong>{item.name}</strong>}
+                    </div>
+          
+                    <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
+                  </div>
                 </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+          
+                {openItemId === item.id && (
+                  <div className="saved-item-details">
+                    {openItemPhoto && (
+                      <img
+                        className="saved-item-photo"
+                        src={openItemPhoto}
+                        alt={item.name || 'Saved item'}
+                      />
+                    )}
+          {editingItemId === item.id && (
+  <div className="edit-form">
+    <label>
+      What is it?
+      <input
+        type="text"
+        value={editName}
+        onChange={(event) => setEditName(event.target.value)}
+      />
+    </label>
+
+    <label>
+      Where did you put it?
+      <input
+        type="text"
+        value={editLocation}
+        onChange={(event) => setEditLocation(event.target.value)}
+      />
+    </label>
+    <div className="edit-actions">
+  <button
+    className="save-edit-button"
+    onClick={saveEditedItem}
+  >
+    Save changes
+  </button>
+
+  <button
+    className="cancel-edit-button"
+    onClick={() => {
+      setEditingItemId(null)
+      setEditName('')
+      setEditLocation('')
+    }}
+  >
+    Cancel
+  </button>
+  </div>
+
+</div>
+
+)}
+                    {item.location && (
+                      <p className="saved-item-location">{item.location}</p>
+                    )}
+          
+                    {openLocationPhoto && (
+                      <img
+                        className="saved-item-photo"
+                        src={openLocationPhoto}
+                        alt="Saved location"
+                      />
+                    )}
+          
+                    <div className="item-actions">
+                      <button
+                        className="edit-button"
+                        onClick={() => {
+                          setEditingItemId(item.id)
+                          setEditName(item.name)
+                          setEditLocation(item.location)
+                        }}
+                      >
+                        Edit
+                      </button>
+          
+                      <button
+                        className="delete-button"
+                        onClick={() => deleteItem(item)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
+          
+              </div>
+            ))}
+          </div>
+                    )}
+                  </div>
+                )}
     </main>
   )
 }

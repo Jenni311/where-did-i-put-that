@@ -315,3 +315,93 @@ button:active {
   background: rgb(125, 174, 233);
   color: white;
 }
+.saved-item {
+  width: 100%;
+  background: #fffdf9;
+  color: #111827;
+  border: 1px solid #d5d9df;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.saved-item-toggle {
+  width: 100%;
+  margin: 0;
+  padding: 16px;
+  background: transparent;
+  color: #111827;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
+}
+
+.saved-item-toggle:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.saved-item-details {
+  padding: 0 16px 16px;
+}
+
+.item-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.item-actions button {
+  flex: 1;
+  width: auto;
+  margin: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+}
+
+.edit-button {
+  background: #ffb176;
+  color: white;
+}
+
+.delete-button {
+  background: #3c3c3c;
+  color: white;
+}.edit-actions {
+
+  display: flex;
+
+  flex-direction: row;
+
+  gap: 12px;
+
+  margin-top: 16px;
+
+  margin-bottom: 16px;
+
+}
+
+.edit-actions .save-edit-button,
+
+.edit-actions .cancel-edit-button {
+
+  flex: 1;
+
+  width: 0;
+
+  margin: 0;
+
+  padding: 12px 10px;
+
+  border-radius: 10px;
+
+}
+
+.cancel-edit-button {
+
+  background: #e7e3dc;
+
+  color: #374151;
+
+}.save-edit-button {
+  background: #1ca3f2;
+  color: white;
+}
