@@ -278,17 +278,23 @@ button:active {
 
 .photo-button {
   display: block;
-  width: 100%;
-  margin: 0;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
   padding: 16px 16px;
   border: 0px solid #d5d9df;
   border-radius: 12px;
-  background: #ffcc6e;
-  color: #374151;
+  background: #60c3fd;
+  color: #ffffff;
   text-align: center;
   cursor: pointer;
 }
-
+.edit-form .photo-button {
+  width: 100%;
+  margin: 0;
+  background: #e7e3dc;
+  color: #374151;
+}
 .photo-button .photo-input {
   display: none;
 }.photo-preview {
@@ -402,10 +408,14 @@ button:active {
   color: #374151;
 
 }.save-edit-button {
-  background: #1ca3f2;
+  background: #60c3fd;
   color: white;
 }
 .saved-item-toggle {
   min-height: 44px;
   padding: 10px 16px;
+}.edit-form .photo-button {
+  background: #ffb176;
+  color: #ffffff;
+  border-color: #d5d0c8;
 }

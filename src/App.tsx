@@ -24,6 +24,8 @@ function App() {
   const [editingItemId, setEditingItemId] = useState<number | null>(null)
   const [editName, setEditName] = useState('')
   const [editLocation, setEditLocation] = useState('')
+  const [editItemPhoto, setEditItemPhoto] = useState<string | null>(null)
+const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
 
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
@@ -377,7 +379,7 @@ onClick={() => setShowAll(!showAll)}
                         alt={item.name || 'Saved item'}
                       />
                     )}
-          {editingItemId === item.id && (
+         {editingItemId === item.id && (
   <div className="edit-form">
     <label>
       What is it?
@@ -388,6 +390,26 @@ onClick={() => setShowAll(!showAll)}
       />
     </label>
 
+    <div className="photo-option">
+      <label className="photo-button">
+        Edit item photo
+        <input
+          className="photo-input"
+          type="file"
+          accept="image/*"
+          onChange={(event) => handlePhotoChange(event, setEditItemPhoto)}
+        />
+      </label>
+
+      {editItemPhoto && (
+        <img
+          className="photo-preview"
+          src={editItemPhoto}
+          alt="New item preview"
+        />
+      )}
+    </div>
+
     <label>
       Where did you put it?
       <input
@@ -396,28 +418,49 @@ onClick={() => setShowAll(!showAll)}
         onChange={(event) => setEditLocation(event.target.value)}
       />
     </label>
+
+    <div className="photo-option">
+      <label className="photo-button">
+        Edit location photo
+        <input
+          className="photo-input"
+          type="file"
+          accept="image/*"
+          onChange={(event) => handlePhotoChange(event, setEditLocationPhoto)}
+        />
+      </label>
+
+      {editLocationPhoto && (
+        <img
+          className="photo-preview"
+          src={editLocationPhoto}
+          alt="New location preview"
+        />
+      )}
+    </div>
+
     <div className="edit-actions">
-  <button
-    className="save-edit-button"
-    onClick={saveEditedItem}
-  >
-    Save changes
-  </button>
+      <button
+        className="save-edit-button"
+        onClick={saveEditedItem}
+      >
+        Save changes
+      </button>
 
-  <button
-    className="cancel-edit-button"
-    onClick={() => {
-      setEditingItemId(null)
-      setEditName('')
-      setEditLocation('')
-    }}
-  >
-    Cancel
-  </button>
+      <button
+        className="cancel-edit-button"
+        onClick={() => {
+          setEditingItemId(null)
+          setEditName('')
+          setEditLocation('')
+          setEditItemPhoto(null)
+          setEditLocationPhoto(null)
+        }}
+      >
+        Cancel
+      </button>
+    </div>
   </div>
-
-</div>
-
 )}
                     {item.location && (
                       <p className="saved-item-location">{item.location}</p>
@@ -431,25 +474,27 @@ onClick={() => setShowAll(!showAll)}
                       />
                     )}
           
-                    <div className="item-actions">
-                      <button
-                        className="edit-button"
-                        onClick={() => {
-                          setEditingItemId(item.id)
-                          setEditName(item.name)
-                          setEditLocation(item.location)
-                        }}
-                      >
-                        Edit
-                      </button>
-          
-                      <button
-                        className="delete-button"
-                        onClick={() => deleteItem(item)}
-                      >
-                        Delete
-                      </button>
-                    </div>
+          {editingItemId !== item.id && (
+  <div className="item-actions">
+    <button
+      className="edit-button"
+      onClick={() => {
+        setEditingItemId(item.id)
+        setEditName(item.name)
+        setEditLocation(item.location)
+      }}
+    >
+      Edit
+    </button>
+
+    <button
+      className="delete-button"
+      onClick={() => deleteItem(item)}
+    >
+      Delete
+    </button>
+  </div>
+)}
                   </div>
                 )}
           
