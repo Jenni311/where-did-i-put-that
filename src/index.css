@@ -270,4 +270,23 @@ button:active {
 
   padding-top: 24px;
 
+}.photo-option {
+  margin-bottom: 20px;
+}
+
+.photo-button {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 16px 16px;
+  border: 0px solid #d5d9df;
+  border-radius: 12px;
+  background: #ffcc6e;
+  color: #374151;
+  text-align: center;
+  cursor: pointer;
+}
+
+.photo-button .photo-input {
+  display: none;
 }

@@ -112,13 +112,16 @@ function App() {
   />
 </label>
 
-<label className="photo-label">
-  Or add a photo of the item
-  <input
-    type="file"
-    accept="image/*"
-  />
-</label>
+<div className="photo-option">
+  <label className="photo-button">
+    📷 Add photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+    />
+  </label>
+</div>
 
 <label>
   Where did you put it?
@@ -130,13 +133,16 @@ function App() {
   />
 </label>
 
-<label className="photo-label">
-  Or add a photo of the place
-  <input
-    type="file"
-    accept="image/*"
-  />
-</label>
+<div className="photo-option">
+  <label className="photo-button">
+    📷 Add photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+    />
+  </label>
+</div>
 
           <button onClick={saveItem}>Save item</button>
         </div>
