@@ -72,6 +72,8 @@ h1 {
   letter-spacing: -0.04em;
 
   color: #3E2723;
+  border: #FAF6F0;
+  border-width: 2px;
 
 
 }
@@ -289,4 +291,9 @@ button:active {
 
 .photo-button .photo-input {
   display: none;
+}.photo-preview {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 12px;
+  display: block;
 }

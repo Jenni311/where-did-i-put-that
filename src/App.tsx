@@ -13,6 +13,8 @@ function App() {
   const [showAll, setShowAll] = useState(false)
   const [showRememberForm, setShowRememberForm] = useState(false)
   const [openItemId, setOpenItemId] = useState<number | null>(null)
+  const [itemPhoto, setItemPhoto] = useState<string | null>(null)
+  const [locationPhoto, setLocationPhoto] = useState<string | null>(null)
 
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
@@ -28,6 +30,24 @@ function App() {
     localStorage.setItem('storedItems', JSON.stringify(items))
   }, [items])
 
+  function handlePhotoChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+    setPhoto: (photo: string | null) => void
+  ) {
+    const file = event.target.files?.[0]
+  
+    if (!file) {
+      return
+    }
+  
+    const reader = new FileReader()
+  
+    reader.onload = () => {
+      setPhoto(reader.result as string)
+    }
+  
+    reader.readAsDataURL(file)
+  }
   function saveItem() {
     if (!itemName.trim() || !location.trim()) {
       return
@@ -113,14 +133,39 @@ function App() {
 </label>
 
 <div className="photo-option">
+
   <label className="photo-button">
+
     📷 Add photo
+
     <input
+
       className="photo-input"
+
       type="file"
+
       accept="image/*"
+
+      onChange={(event) => handlePhotoChange(event, setItemPhoto)}
+
     />
+
   </label>
+
+  {itemPhoto && (
+
+    <img
+
+      className="photo-preview"
+
+      src={itemPhoto}
+
+      alt="Item preview"
+
+    />
+
+  )}
+
 </div>
 
 <label>
@@ -134,14 +179,39 @@ function App() {
 </label>
 
 <div className="photo-option">
+
   <label className="photo-button">
+
     📷 Add photo
+
     <input
+
       className="photo-input"
+
       type="file"
+
       accept="image/*"
+
+      onChange={(event) => handlePhotoChange(event, setLocationPhoto)}
+
     />
+
   </label>
+
+  {locationPhoto && (
+
+    <img
+
+      className="photo-preview"
+
+      src={locationPhoto}
+
+      alt="Location preview"
+
+    />
+
+  )}
+
 </div>
 
           <button onClick={saveItem}>Save item</button>
