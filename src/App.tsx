@@ -272,12 +272,30 @@ setLocationPhoto(null)
 
 <h2>Find something...</h2>
 
-      <input
-        type="text"
-        placeholder="Search for an item..."
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-      />
+<div className="search-input-wrapper">
+  <input
+    type="text"
+    placeholder="Search for an item..."
+    value={search}
+    onChange={(event) => setSearch(event.target.value)}
+  />
+
+  {search && (
+    <button
+      type="button"
+      className="clear-search-button"
+      onClick={() => {
+        setSearch('')
+        setOpenItemId(null)
+        setOpenItemPhoto(null)
+        setOpenLocationPhoto(null)
+      }}
+      aria-label="Clear search"
+    >
+      ×
+    </button>
+  )}
+</div>
 
 {search && (
   <div className="search-results">
