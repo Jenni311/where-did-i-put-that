@@ -523,14 +523,6 @@ setLocationPhoto(null)
 
           setOpenItemId(item.id)
 
-requestAnimationFrame(() => {
-  document
-    .getElementById(`saved-item-${item.id}`)
-    ?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
-})
 
 const savedItemPhoto = item.itemPhotoKey
   ? await getFromDatabase<string>(item.itemPhotoKey)
@@ -542,6 +534,15 @@ const savedLocationPhoto = item.locationPhotoKey
 
   setOpenItemPhoto(savedItemPhoto)
   setOpenLocationPhoto(savedLocationPhoto)
+  
+  setTimeout(() => {
+    document
+      .getElementById(`saved-item-${item.id}`)
+      ?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      })
+  }, 150)
   
   setTimeout(() => {
     document
