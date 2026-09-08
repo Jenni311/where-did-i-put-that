@@ -237,7 +237,7 @@ setLocationPhoto(null)
 
   <label className="photo-button">
 
-    📷 Add photo
+    Add photo
 
     <input
 
@@ -283,7 +283,7 @@ setLocationPhoto(null)
 
   <label className="photo-button">
 
-    📷 Add photo
+    Add photo
 
     <input
 
