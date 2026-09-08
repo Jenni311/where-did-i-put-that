@@ -429,7 +429,7 @@ setOpenLocationPhoto(savedLocationPhoto)
 
     <div className="photo-option">
       <label className="photo-button">
-      {item.itemPhotoKey ? 'Edit item photo' : 'Add item photo'}
+      {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
         <input
           className="photo-input"
           type="file"
@@ -458,7 +458,7 @@ setOpenLocationPhoto(savedLocationPhoto)
 
     <div className="photo-option">
       <label className="photo-button">
-      {item.locationPhotoKey ? 'Edit location photo' : 'Add location photo'}
+      {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
         <input
           className="photo-input"
           type="file"
