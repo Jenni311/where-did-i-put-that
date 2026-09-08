@@ -100,11 +100,25 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
       return
     }
   
+    if (item.itemPhotoKey) {
+      await deleteFromDatabase(item.itemPhotoKey)
+    }
+  
+    if (item.locationPhotoKey) {
+      await deleteFromDatabase(item.locationPhotoKey)
+    }
+  
     const updatedItems = items.filter(
       (savedItem) => savedItem.id !== item.id
     )
   
     setItems(updatedItems)
+  
+    setItemThumbnails((previous) => {
+      const updated = { ...previous }
+      delete updated[item.id]
+      return updated
+    })
   
     if (openItemId === item.id) {
       setOpenItemId(null)
@@ -257,28 +271,74 @@ setLocationPhoto(null)
       />
 
 {search && (
+  <div className="search-results">
+    {searchResults.length > 0 ? (
+      searchResults.map((item) => (
+        <div
+          className={`search-result ${
+            openItemId === item.id ? 'search-result-open' : ''
+          }`}
+          key={item.id}
+        >
+          <button
+            className="search-result-toggle"
+            onClick={async () => {
+              if (openItemId === item.id) {
+                setOpenItemId(null)
+                setOpenItemPhoto(null)
+                setOpenLocationPhoto(null)
+                return
+              }
 
-<div className="search-results">
+              setOpenItemId(item.id)
 
-  {searchResults.length > 0 ? (
+              const savedItemPhoto = item.itemPhotoKey
+                ? await getFromDatabase<string>(item.itemPhotoKey)
+                : null
 
-    searchResults.map((item) => (
+              const savedLocationPhoto = item.locationPhotoKey
+                ? await getFromDatabase<string>(item.locationPhotoKey)
+                : null
 
-      <div className="search-result" key={item.id}>
+              setOpenItemPhoto(savedItemPhoto)
+              setOpenLocationPhoto(savedLocationPhoto)
+            }}
+          >
+            <strong>{item.name}</strong>
+          </button>
 
-        <strong>{item.name}</strong>
+          {openItemId === item.id && (
+            <div className="search-result-details">
+              {openItemPhoto && (
+                <img
+                  className="saved-item-photo"
+                  src={openItemPhoto}
+                  alt="Saved item"
+                />
+              )}
 
-        <p>{item.location}</p>
+              {item.location && (
+                <p className="saved-item-location">
+                  {item.location}
+                </p>
+              )}
 
-      </div>
-
-    ))
-          ) : (
-            <p>No matching items found.</p>
+              {openLocationPhoto && (
+                <img
+                  className="saved-item-photo"
+                  src={openLocationPhoto}
+                  alt="Saved location"
+                />
+              )}
+            </div>
           )}
         </div>
-      )}
-
+      ))
+    ) : (
+      <p>No matching items found.</p>
+    )}
+  </div>
+)}
 <button
   className="remember-button"
   onClick={() => {
@@ -430,7 +490,12 @@ setLocationPhoto(null)
           <h2>All saved items</h2>
 
           {items.length === 0 ? (
-            <p>No items saved yet.</p>
+            <div className="empty-state">
+            <p className="empty-state-title">Nothing here yet.</p>
+            <p className="empty-state-text">
+              Add your first item and you'll know exactly where to find it.
+            </p>
+          </div>
           ) : (
 <div className="saved-items-list">
 {[...items]

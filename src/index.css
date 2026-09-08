@@ -587,3 +587,54 @@ button:active {
     bottom: 20px;
   }
 }
+.search-result {
+  margin-bottom: 10px;
+  border: 1px solid #d5d9df;
+  border-radius: 14px;
+  background: #fffdf9;
+  overflow: hidden;
+}
+
+.search-result-toggle {
+  width: 100%;
+  margin: 0;
+  padding: 14px 16px;
+
+  background: transparent;
+  color: #3e2723;
+
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.search-result-toggle strong {
+  font-size: 1.05rem;
+}
+
+.search-result-details {
+  padding: 0 16px 16px;
+}
+.empty-state {
+  margin-top: 16px;
+  padding: 24px 20px;
+  text-align: center;
+
+  background: rgba(255, 253, 249, 0.65);
+  border: 1px solid #e3ddd5;
+  border-radius: 16px;
+}
+
+.empty-state-title {
+  margin: 0 0 6px;
+  color: #3e2723;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.empty-state-text {
+  margin: 0;
+  color: #817265;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
