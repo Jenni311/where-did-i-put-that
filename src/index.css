@@ -477,3 +477,7 @@ button:active {
   margin: 12px auto;
   border-radius: 12px;
 }
+.saved-item-title strong {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
