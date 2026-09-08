@@ -469,3 +469,11 @@ button:active {
 .saved-item:not(.saved-item-open):not(:has(.has-thumbnail)) .saved-item-toggle {
   padding-left: 0px;
 }
+.saved-item-photo {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  margin: 12px auto;
+  border-radius: 12px;
+}
