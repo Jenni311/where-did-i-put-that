@@ -494,6 +494,12 @@ setLocationPhoto(null)
 
     setShowAll(opening)
 
+    if (!opening) {
+      setOpenItemId(null)
+      setOpenItemPhoto(null)
+      setOpenLocationPhoto(null)
+    }
+
     if (opening) {
       setTimeout(() => {
         document
