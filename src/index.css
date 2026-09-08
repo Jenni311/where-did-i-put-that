@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
 :root {
 
@@ -70,26 +71,12 @@ main {
   padding: 70px 20px 48px;
 }
 
-h1 {
-
-  margin: 0 0 8px;
-
-  font-family: "Lexend", sans-serif;
-
-  font-size: clamp(2rem, 7vw, 3rem);
-
-  font-weight: 700;
-
-  line-height: 1.05;
-
-  letter-spacing: -0.04em;
-
-  color: #3E2723;
-  border: #FAF6F0;
-  border-width: 0px;
-
-
-}
+  h1 {
+    margin: 0 0 8px;
+    font-family: 'Titan One', sans-serif;
+    font-weight: 400;
+    color: #3E2723;
+  }
 
 main > p:first-of-type {
 
@@ -524,13 +511,12 @@ button:active {
 
 .hero h1 {
   margin: 0;
-
   color: #402724;
 
-  font-size: 3rem;
-  font-weight: 800;
-  line-height: 0.98;
-  letter-spacing: -0.055em;
+  /* Change your title here */
+  font-size: 2.7rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
 }
 
 .hero-subtitle {
@@ -577,12 +563,6 @@ button:active {
 
   .hero-text {
     width: 70%;
-  }
-
-  .hero h1 {
-    font-size: 2.75rem;
-    line-height: 0.98;
-    letter-spacing: -0.055em;
   }
 
   .hero-subtitle {
