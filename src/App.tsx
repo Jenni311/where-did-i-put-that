@@ -650,58 +650,61 @@ const savedLocationPhoto = item.locationPhotoKey
       />
     )}
 
-    <div className="photo-option">
-      <label className="photo-button">
-        {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
-        <input
-          className="photo-input"
-          type="file"
-          accept="image/*"
-          onChange={(event) =>
-            handlePhotoChange(event, setEditItemPhoto)
-          }
-        />
-      </label>
+<div className="photo-option">
+  <div className="photo-edit-actions">
+    <label className="photo-button">
+      {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        onChange={(event) =>
+          handlePhotoChange(event, setEditItemPhoto)
+        }
+      />
+    </label>
 
-      {item.itemPhotoKey && (
-        <button
-          className="delete-photo-button"
-          onClick={async () => {
-            await deleteFromDatabase(item.itemPhotoKey!)
+    {item.itemPhotoKey && (
+      <button
+        type="button"
+        className="delete-photo-button"
+        onClick={async () => {
+          await deleteFromDatabase(item.itemPhotoKey!)
 
-            setItems((previous) =>
-              previous.map((savedItem) =>
-                savedItem.id === item.id
-                  ? {
-                      ...savedItem,
-                      itemPhotoKey: undefined,
-                    }
-                  : savedItem
-              )
+          setItems((previous) =>
+            previous.map((savedItem) =>
+              savedItem.id === item.id
+                ? {
+                    ...savedItem,
+                    itemPhotoKey: undefined,
+                  }
+                : savedItem
             )
+          )
 
-            setItemThumbnails((previous) => {
-              const updated = { ...previous }
-              delete updated[item.id]
-              return updated
-            })
+          setItemThumbnails((previous) => {
+            const updated = { ...previous }
+            delete updated[item.id]
+            return updated
+          })
 
-            setOpenItemPhoto(null)
-            setEditItemPhoto(null)
-          }}
-        >
-          Delete photo
-        </button>
-      )}
+          setOpenItemPhoto(null)
+          setEditItemPhoto(null)
+        }}
+      >
+        Delete photo
+      </button>
+    )}
+  </div>
 
-      {editItemPhoto && (
-        <img
-          className="photo-preview"
-          src={editItemPhoto}
-          alt="New item preview"
-        />
-      )}
-    </div>
+  {editItemPhoto && (
+    <img
+      className="photo-preview"
+      src={editItemPhoto}
+      alt="New item preview"
+    />
+  )}
+</div>
 
     <label>
       Where did you put it?

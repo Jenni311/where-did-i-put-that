@@ -738,3 +738,15 @@ button:active {
 
   cursor: pointer;
 }
+.photo-edit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.photo-edit-actions .photo-button,
+.photo-edit-actions .delete-photo-button {
+  width: 70%;
+  margin: 0 auto;
+}
