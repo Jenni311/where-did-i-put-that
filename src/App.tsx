@@ -651,7 +651,10 @@ const savedLocationPhoto = item.locationPhotoKey
     )}
 
 <div className="photo-option">
-  <div className="photo-edit-actions">
+<div
+  id={`edit-photo-actions-${item.id}`}
+  className="photo-edit-actions"
+>
     <label className="photo-button">
       {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
       <input
@@ -811,21 +814,21 @@ const savedLocationPhoto = item.locationPhotoKey
           
           {editingItemId !== item.id && (
   <div className="item-actions">
-    <button
+   <button
   className="edit-button"
   onClick={() => {
     setEditingItemId(item.id)
     setEditName(item.name)
     setEditLocation(item.location)
 
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       document
-        .getElementById(`saved-item-${item.id}`)
+        .getElementById(`edit-photo-actions-${item.id}`)
         ?.scrollIntoView({
           behavior: 'smooth',
-          block: 'start',
+          block: 'center',
         })
-    })
+    }, 150)
   }}
 >
   Edit
