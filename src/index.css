@@ -72,7 +72,7 @@ h1 {
 
   color: #3E2723;
   border: #FAF6F0;
-  border-width: 2px;
+  border-width: 0px;
 
 
 }
@@ -173,7 +173,7 @@ button {
  /* background: #0e8aa0;
  background: #8D6E63;
  background: #738478;*/
- background: #f67f7f;
+ background: #f88c8c;
 
   color: white;
 
@@ -289,12 +289,7 @@ button:active {
   text-align: center;
   cursor: pointer;
 }
-.edit-form .photo-button {
-  width: 100%;
-  margin: 0;
-  background: #e7e3dc;
-  color: #374151;
-}
+
 .photo-button .photo-input {
   display: none;
 }.photo-preview {
@@ -416,11 +411,18 @@ button:active {
 .saved-item-toggle {
   min-height: 44px;
   padding: 10px 16px;
-}.edit-form .photo-button {
+}
+.edit-form .photo-button {
+  width: 65%;
+  margin: 0 auto;
+  padding: 12px 16px;
   background: #ffb176;
   color: #ffffff;
   border-color: #d5d0c8;
-}.saved-item-open {
+
+
+}
+.saved-item-open {
   grid-column: 1 / -1;
 }.saved-item:not(.saved-item-open) {
   height: 60px;
