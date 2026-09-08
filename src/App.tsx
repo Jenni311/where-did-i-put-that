@@ -102,7 +102,9 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
   }
   async function deleteItem(item: StoredItem) {
     const confirmed = window.confirm(
-      `Delete ${item.name || 'this item'}?`
+      `Are you sure you want to delete ${
+        item.name || 'this item'
+      }? This will also delete its saved photos.`
     )
   
     if (!confirmed) {
@@ -672,6 +674,14 @@ const savedLocationPhoto = item.locationPhotoKey
         type="button"
         className="delete-photo-button"
         onClick={async () => {
+          const confirmed = window.confirm(
+            'Are you sure you want to delete this photo?'
+          )
+        
+          if (!confirmed) {
+            return
+          }
+        
           await deleteFromDatabase(item.itemPhotoKey!)
 
           setItems((previous) =>
@@ -743,6 +753,14 @@ const savedLocationPhoto = item.locationPhotoKey
         <button
           className="delete-photo-button"
           onClick={async () => {
+            const confirmed = window.confirm(
+              'Are you sure you want to delete this photo?'
+            )
+          
+            if (!confirmed) {
+              return
+            }
+          
             await deleteFromDatabase(item.locationPhotoKey!)
 
             setItems((previous) =>
