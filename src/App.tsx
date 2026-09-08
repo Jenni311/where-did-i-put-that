@@ -228,8 +228,10 @@ setLocationPhoto(null)
     <h1>Where Did I Put That?</h1>
 
     <p className="hero-subtitle">
-      Save where you put things so you can find them later.
-    </p>
+  Save where you put things
+  <br />
+  so you can find them later.
+</p>
 
     <p className="hero-tagline">
       Less searching

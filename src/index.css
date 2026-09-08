@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
 
 :root {
 
@@ -512,39 +512,47 @@ button:active {
 }
 .hero {
   position: relative;
-  min-height: 330px;
-  margin-bottom: 24px;
+  min-height: 350px;
+  margin-bottom: 30px;
 }
 
 .hero-text {
   position: relative;
   z-index: 2;
+  width: 68%;
 }
 
 .hero h1 {
-  max-width: 430px;
   margin: 0;
+
   color: #402724;
-  font-size: clamp(2.7rem, 10vw, 4rem);
+
+  font-size: 3rem;
+  font-weight: 800;
   line-height: 0.98;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.055em;
 }
 
 .hero-subtitle {
-  max-width: 390px;
   margin: 18px 0 0;
+
   color: #817265;
-  font-size: 1.35rem;
+
+  font-size: 1.15rem;
   font-weight: 600;
   line-height: 1.35;
+  letter-spacing: -0.015em;
 }
 
 .hero-tagline {
-  margin: 22px 0 0 8px;
-  color: #71846e;
-  font-size: 1.45rem;
-  font-style: italic;
-  line-height: 1.1;
+  margin: 26px 0 0 8px;
+  color: #748970;
+
+  font-family: 'Caveat', cursive;
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 0.95;
+
   transform: rotate(-4deg);
 }
 
@@ -552,31 +560,50 @@ button:active {
   position: absolute;
   z-index: 1;
 
-  width: 230px;
+  width: 245px;
   height: auto;
 
-  right: -20px;
-  bottom: -10px;
+  right: -25px;
+  bottom: 50px;
 
   object-fit: contain;
   pointer-events: none;
 }
 @media (max-width: 500px) {
   .hero {
-    min-height: 360px;
+    min-height: 345px;
+    margin-bottom: 28px;
+  }
+
+  .hero-text {
+    width: 70%;
   }
 
   .hero h1 {
-    max-width: 320px;
+    font-size: 2.75rem;
+    line-height: 0.98;
+    letter-spacing: -0.055em;
   }
 
   .hero-subtitle {
-    max-width: 300px;
+    margin-top: 16px;
+    font-size: 1.15rem;
+    line-height: 1.35;
+  }
+
+  .hero-tagline {
+    margin-top: 25px;
+    font-size: 1.9rem;
   }
 
   .hero-image {
-    width: 205px;
-    right: -12px;
-    bottom: 0;
+    width: 220px;
+    right: -25px;
+    bottom: -5px;
+  }
+}
+@media (max-width: 500px) {
+  .hero-image {
+    bottom: 90px;
   }
 }
