@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800&display=swap');
 
 :root {
 
@@ -83,9 +84,9 @@ main > p:first-of-type {
   margin: 0 0 32px;
 
   color: rgb(123, 107, 92);
-
+  font-family: 'Commissioner', sans-serif;
   font-size: 1.4rem;
-  font-weight: 700;
+  font-weight: 800;
 
 }
 
@@ -523,9 +524,9 @@ button:active {
   margin: 18px 0 0;
 
   color: #817265;
-
+  font-family: 'Commissioner', sans-serif;
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.35;
   letter-spacing: -0.015em;
 }
@@ -567,8 +568,10 @@ button:active {
 
   .hero-subtitle {
     margin-top: 16px;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     line-height: 1.35;
+    font-weight: 600;
+
   }
 
   .hero-tagline {
