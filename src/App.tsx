@@ -4,7 +4,7 @@ import {
   getFromDatabase,
   saveToDatabase,
 } from './db'
-
+import heroItems from './assets/hero2.png'
 type StoredItem = {
   id: number
   name: string
@@ -223,10 +223,29 @@ setLocationPhoto(null)
 
   return (
     <main>
-      <h1>Where Did I Put That?</h1>
-      <p>Save where you put things so you can find them later.</p>
+     <div className="hero">
+  <div className="hero-text">
+    <h1>Where Did I Put That?</h1>
 
-      <h2>Find something...</h2>
+    <p className="hero-subtitle">
+      Save where you put things so you can find them later.
+    </p>
+
+    <p className="hero-tagline">
+      Less searching
+      <br />
+      More living ♡
+    </p>
+  </div>
+
+  <img
+    className="hero-image"
+    src={heroItems}
+    alt=""
+  />
+</div>
+
+<h2>Find something...</h2>
 
       <input
         type="text"

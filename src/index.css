@@ -33,7 +33,21 @@ body {
 
   min-height: 100vh;
 
-  background: #FAF6F0;
+  background:
+  linear-gradient(
+    to top,
+    rgba(113, 91, 70, 0.18) 0%,
+    rgba(113, 91, 70, 0.08) 12%,
+    transparent 32%
+
+  ),
+  linear-gradient(
+    180deg,
+    #faf7f1 0%,
+    #fffdf9 75%,
+    #84827f 100%
+  
+  );
   /*background: #FFFBEA*/
 
 
@@ -495,4 +509,74 @@ button:active {
 
   font-size: 0.9rem;
   font-weight: 600;
+}
+.hero {
+  position: relative;
+  min-height: 330px;
+  margin-bottom: 24px;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+}
+
+.hero h1 {
+  max-width: 430px;
+  margin: 0;
+  color: #402724;
+  font-size: clamp(2.7rem, 10vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.hero-subtitle {
+  max-width: 390px;
+  margin: 18px 0 0;
+  color: #817265;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.hero-tagline {
+  margin: 22px 0 0 8px;
+  color: #71846e;
+  font-size: 1.45rem;
+  font-style: italic;
+  line-height: 1.1;
+  transform: rotate(-4deg);
+}
+
+.hero-image {
+  position: absolute;
+  z-index: 1;
+
+  width: 230px;
+  height: auto;
+
+  right: -20px;
+  bottom: -10px;
+
+  object-fit: contain;
+  pointer-events: none;
+}
+@media (max-width: 500px) {
+  .hero {
+    min-height: 360px;
+  }
+
+  .hero h1 {
+    max-width: 320px;
+  }
+
+  .hero-subtitle {
+    max-width: 300px;
+  }
+
+  .hero-image {
+    width: 205px;
+    right: -12px;
+    bottom: 0;
+  }
 }
