@@ -499,8 +499,8 @@ button:active {
 }
 .hero {
   position: relative;
-  min-height: 350px;
-  margin-bottom: 30px;
+  min-height: 250px;
+  margin-bottom: 20px;
 }
 
 .hero-text {
@@ -557,8 +557,8 @@ button:active {
 }
 @media (max-width: 500px) {
   .hero {
-    min-height: 345px;
-    margin-bottom: 28px;
+    min-height: 260px;
+    margin-bottom: 16px;
   }
 
   .hero-text {
@@ -584,6 +584,6 @@ button:active {
 }
 @media (max-width: 500px) {
   .hero-image {
-    bottom: 90px;
+    bottom: 20px;
   }
 }
