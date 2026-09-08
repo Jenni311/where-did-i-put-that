@@ -288,6 +288,7 @@ button:active {
   color: #ffffff;
   text-align: center;
   cursor: pointer;
+  font-size: 1rem;
 }
 
 .photo-button .photo-input {
@@ -444,11 +445,27 @@ button:active {
 
 .saved-item:not(.saved-item-open) .saved-item-title {
   flex: 1;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-}.saved-item-open .saved-item-details {
+  text-align: left;
+
+}
+.saved-item-open .saved-item-details {
   padding-top: 0;
 
 }.saved-item {
   scroll-margin-top: 20px;
+}
+
+.saved-item:not(.saved-item-open):has(.has-thumbnail) .saved-item-toggle {
+  padding-left: 0px;
+}
+.saved-item-title {
+  gap: 5px;
+}
+.saved-item:not(.saved-item-open) .saved-item-title:not(.has-thumbnail) {
+  padding-left: 0px;
+}
+.saved-item:not(.saved-item-open):not(:has(.has-thumbnail)) .saved-item-toggle {
+  padding-left: 0px;
 }

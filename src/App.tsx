@@ -100,9 +100,39 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
     }
   }
   
-  function saveEditedItem() {
+  async function saveEditedItem() {
     if (editingItemId === null) {
       return
+    }
+  
+    const itemToEdit = items.find(
+      (item) => item.id === editingItemId
+    )
+  
+    if (!itemToEdit) {
+      return
+    }
+  
+    let itemPhotoKey = itemToEdit.itemPhotoKey
+    let locationPhotoKey = itemToEdit.locationPhotoKey
+  
+    if (editItemPhoto) {
+      itemPhotoKey =
+        itemPhotoKey || `item-photo-${editingItemId}`
+  
+      await saveToDatabase(itemPhotoKey, editItemPhoto)
+  
+      setItemThumbnails((previous) => ({
+        ...previous,
+        [editingItemId]: editItemPhoto,
+      }))
+    }
+  
+    if (editLocationPhoto) {
+      locationPhotoKey =
+        locationPhotoKey || `location-photo-${editingItemId}`
+  
+      await saveToDatabase(locationPhotoKey, editLocationPhoto)
     }
   
     const updatedItems = items.map((item) =>
@@ -111,14 +141,27 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
             ...item,
             name: editName,
             location: editLocation,
+            itemPhotoKey,
+            locationPhotoKey,
           }
         : item
     )
   
     setItems(updatedItems)
+  
+    if (editItemPhoto) {
+      setOpenItemPhoto(editItemPhoto)
+    }
+  
+    if (editLocationPhoto) {
+      setOpenLocationPhoto(editLocationPhoto)
+    }
+  
     setEditingItemId(null)
     setEditName('')
     setEditLocation('')
+    setEditItemPhoto(null)
+    setEditLocationPhoto(null)
   }
   async function saveItem() {
     if ((!itemName.trim() && !itemPhoto) || (!location.trim() && !locationPhoto)) {
@@ -349,7 +392,11 @@ setLocationPhoto(null)
             <p>No items saved yet.</p>
           ) : (
 <div className="saved-items-list">
-  {items.map((item) => (
+{[...items]
+  .sort((a, b) =>
+    a.name.localeCompare(b.name, 'fi', { sensitivity: 'base' })
+  )
+  .map((item) => (
     <div
       id={`saved-item-${item.id}`}
       className={`saved-item ${
@@ -390,17 +437,21 @@ setOpenItemPhoto(savedItemPhoto)
 setOpenLocationPhoto(savedLocationPhoto)
 }}
 >
-        <div className="saved-item-top">
-          <div className="saved-item-title">
-            {itemThumbnails[item.id] && (
-              <img
-                className="saved-item-thumbnail"
-                src={itemThumbnails[item.id]}
-                alt=""
-              />
-            )}
+<div className="saved-item-top">
+  <div
+    className={`saved-item-title ${
+      itemThumbnails[item.id] ? 'has-thumbnail' : ''
+    }`}
+  >
+    {itemThumbnails[item.id] && (
+      <img
+        className="saved-item-thumbnail"
+        src={itemThumbnails[item.id]}
+        alt=""
+      />
+    )}
 
-            {item.name && <strong>{item.name}</strong>}
+    {item.name && <strong>{item.name}</strong>}
           </div>
           
                     <span>{openItemId === item.id ? '⌃' : '⌄'}</span>
