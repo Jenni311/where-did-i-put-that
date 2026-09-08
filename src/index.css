@@ -703,7 +703,7 @@ button:active {
   line-height: 1;
   cursor: pointer;
 }
-..collapse-item-button {
+.collapse-item-button {
   display: block;
   width: 44px;
   height: 36px;
