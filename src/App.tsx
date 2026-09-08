@@ -480,13 +480,13 @@ setOpenLocationPhoto(savedLocationPhoto)
           
                 {openItemId === item.id && (
                   <div className="saved-item-details">
-                    {openItemPhoto && (
-                      <img
-                        className="saved-item-photo"
-                        src={openItemPhoto}
-                        alt={item.name || 'Saved item'}
-                      />
-                    )}
+                    {editingItemId !== item.id && openItemPhoto && (
+  <img
+    className="saved-item-photo"
+    src={openItemPhoto}
+    alt="Saved item"
+  />
+)}
          {editingItemId === item.id && (
   <div className="edit-form">
     <label>
@@ -497,6 +497,14 @@ setOpenLocationPhoto(savedLocationPhoto)
         onChange={(event) => setEditName(event.target.value)}
       />
     </label>
+
+    {openItemPhoto && !editItemPhoto && (
+      <img
+        className="photo-preview"
+        src={openItemPhoto}
+        alt="Current item"
+      />
+    )}
 
     <div className="photo-option">
       <label className="photo-button">
@@ -559,6 +567,14 @@ setOpenLocationPhoto(savedLocationPhoto)
         onChange={(event) => setEditLocation(event.target.value)}
       />
     </label>
+
+    {openLocationPhoto && !editLocationPhoto && (
+      <img
+        className="photo-preview"
+        src={openLocationPhoto}
+        alt="Current location"
+      />
+    )}
 
     <div className="photo-option">
       <label className="photo-button">
@@ -630,17 +646,21 @@ setOpenLocationPhoto(savedLocationPhoto)
     </div>
   </div>
 )}
-                    {item.location && (
-                      <p className="saved-item-location">{item.location}</p>
-                    )}
-          
-                    {openLocationPhoto && (
-                      <img
-                        className="saved-item-photo"
-                        src={openLocationPhoto}
-                        alt="Saved location"
-                      />
-                    )}
+                    {editingItemId !== item.id && (
+  <>
+    {item.location && (
+      <p className="saved-item-location">{item.location}</p>
+    )}
+
+    {openLocationPhoto && (
+      <img
+        className="saved-item-photo"
+        src={openLocationPhoto}
+        alt="Saved location"
+      />
+    )}
+  </>
+)}
           
           {editingItemId !== item.id && (
   <div className="item-actions">

@@ -415,7 +415,7 @@ button:active {
 }
 .edit-form .photo-button {
   width: 65%;
-  margin: 0 auto;
+  margin: 10px auto 0;  
   padding: 12px 16px;
   background: #ffb176;
   color: #ffffff;
@@ -490,7 +490,7 @@ button:active {
   background: black;
   color: #ffffff;
 
-  border: 0px solid #f3b2b2;
+  border: 0px;
   border-radius: 12px;
 
   font-size: 0.9rem;
