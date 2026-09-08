@@ -41,6 +41,8 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
   }, [items])
 
   useEffect(() => {
+    let cancelled = false
+  
     async function loadThumbnails() {
       const thumbnails: Record<number, string> = {}
   
@@ -54,10 +56,16 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
         }
       }
   
-      setItemThumbnails(thumbnails)
+      if (!cancelled) {
+        setItemThumbnails(thumbnails)
+      }
     }
   
     loadThumbnails()
+  
+    return () => {
+      cancelled = true
+    }
   }, [items])
 
   function handlePhotoChange(
