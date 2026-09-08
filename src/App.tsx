@@ -459,18 +459,23 @@ setLocationPhoto(null)
   </label>
 
   {locationPhoto && (
-
+  <div className="photo-preview-wrapper">
     <img
-
       className="photo-preview"
-
       src={locationPhoto}
-
-      alt="Location preview"
-
+      alt="Preview"
     />
 
-  )}
+    <button
+      type="button"
+      className="remove-preview-photo"
+      onClick={() => setLocationPhoto(null)}
+      aria-label="Remove photo"
+    >
+      ×
+    </button>
+  </div>
+)}
 
 </div>
 

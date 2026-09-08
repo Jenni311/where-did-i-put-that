@@ -638,3 +638,31 @@ button:active {
   font-size: 0.95rem;
   line-height: 1.4;
 }
+
+.photo-preview-wrapper {
+  position: relative;
+}
+
+.remove-preview-photo {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(62, 39, 35, 0.82);
+  color: white;
+  border: 0;
+  border-radius: 50%;
+
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
