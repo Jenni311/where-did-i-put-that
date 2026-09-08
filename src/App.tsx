@@ -275,11 +275,12 @@ setLocationPhoto(null)
     {searchResults.length > 0 ? (
       searchResults.map((item) => (
         <div
-          className={`search-result ${
-            openItemId === item.id ? 'search-result-open' : ''
-          }`}
-          key={item.id}
-        >
+  id={`search-result-${item.id}`}
+  className={`search-result ${
+    openItemId === item.id ? 'search-result-open' : ''
+  }`}
+  key={item.id}
+>
           <button
             className="search-result-toggle"
             onClick={async () => {
@@ -539,8 +540,17 @@ const savedLocationPhoto = item.locationPhotoKey
   ? await getFromDatabase<string>(item.locationPhotoKey)
   : null
 
-setOpenItemPhoto(savedItemPhoto)
-setOpenLocationPhoto(savedLocationPhoto)
+  setOpenItemPhoto(savedItemPhoto)
+  setOpenLocationPhoto(savedLocationPhoto)
+  
+  setTimeout(() => {
+    document
+      .getElementById(`search-result-${item.id}`)
+      ?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      })
+  }, 100)
 }}
 >
 <div className="saved-item-top">
