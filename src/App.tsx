@@ -234,9 +234,9 @@ setLocationPhoto(null)
 </p>
 
     <p className="hero-tagline">
-      Less searching
+    For everything you've 
       <br />
-      More living ♡
+      put somewhere
     </p>
   </div>
 
