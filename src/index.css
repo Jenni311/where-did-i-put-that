@@ -481,3 +481,18 @@ button:active {
   font-size: 0.9rem;
   font-weight: 600;
 }
+.delete-photo-button {
+  display: block;
+  width: 60%;
+  margin: 8px auto 0;
+  padding: 10px 14px;
+
+  background: black;
+  color: #ffffff;
+
+  border: 0px solid #f3b2b2;
+  border-radius: 12px;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+}

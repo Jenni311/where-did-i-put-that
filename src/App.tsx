@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
-import { getFromDatabase, saveToDatabase } from './db'
+import {
+  deleteFromDatabase,
+  getFromDatabase,
+  saveToDatabase,
+} from './db'
 
 type StoredItem = {
   id: number
@@ -26,6 +30,7 @@ function App() {
   const [editLocation, setEditLocation] = useState('')
   const [editItemPhoto, setEditItemPhoto] = useState<string | null>(null)
 const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
+
 
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
@@ -373,7 +378,7 @@ setLocationPhoto(null)
 
 </div>
 
-          <button onClick={saveItem}>Save item</button>
+<button onClick={saveItem}>Save item</button>
         </div>
       )}
 
@@ -495,14 +500,47 @@ setOpenLocationPhoto(savedLocationPhoto)
 
     <div className="photo-option">
       <label className="photo-button">
-      {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
+        {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
         <input
           className="photo-input"
           type="file"
           accept="image/*"
-          onChange={(event) => handlePhotoChange(event, setEditItemPhoto)}
+          onChange={(event) =>
+            handlePhotoChange(event, setEditItemPhoto)
+          }
         />
       </label>
+
+      {item.itemPhotoKey && (
+        <button
+          className="delete-photo-button"
+          onClick={async () => {
+            await deleteFromDatabase(item.itemPhotoKey!)
+
+            setItems((previous) =>
+              previous.map((savedItem) =>
+                savedItem.id === item.id
+                  ? {
+                      ...savedItem,
+                      itemPhotoKey: undefined,
+                    }
+                  : savedItem
+              )
+            )
+
+            setItemThumbnails((previous) => {
+              const updated = { ...previous }
+              delete updated[item.id]
+              return updated
+            })
+
+            setOpenItemPhoto(null)
+            setEditItemPhoto(null)
+          }}
+        >
+          Delete photo
+        </button>
+      )}
 
       {editItemPhoto && (
         <img
@@ -524,14 +562,41 @@ setOpenLocationPhoto(savedLocationPhoto)
 
     <div className="photo-option">
       <label className="photo-button">
-      {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
+        {item.locationPhotoKey ? 'Edit photo' : 'Add photo'}
         <input
           className="photo-input"
           type="file"
           accept="image/*"
-          onChange={(event) => handlePhotoChange(event, setEditLocationPhoto)}
+          onChange={(event) =>
+            handlePhotoChange(event, setEditLocationPhoto)
+          }
         />
       </label>
+
+      {item.locationPhotoKey && (
+        <button
+          className="delete-photo-button"
+          onClick={async () => {
+            await deleteFromDatabase(item.locationPhotoKey!)
+
+            setItems((previous) =>
+              previous.map((savedItem) =>
+                savedItem.id === item.id
+                  ? {
+                      ...savedItem,
+                      locationPhotoKey: undefined,
+                    }
+                  : savedItem
+              )
+            )
+
+            setOpenLocationPhoto(null)
+            setEditLocationPhoto(null)
+          }}
+        >
+          Delete photo
+        </button>
+      )}
 
       {editLocationPhoto && (
         <img

@@ -60,3 +60,18 @@ export async function getFromDatabase<T>(
     }
   })
 }
+export async function deleteFromDatabase(
+    key: string
+  ): Promise<void> {
+    const database = await openDatabase()
+  
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction(STORE_NAME, 'readwrite')
+      const store = transaction.objectStore(STORE_NAME)
+  
+      store.delete(key)
+  
+      transaction.oncomplete = () => resolve()
+      transaction.onerror = () => reject(transaction.error)
+    })
+  }
