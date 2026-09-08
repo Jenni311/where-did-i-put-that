@@ -483,9 +483,9 @@ button:active {
 }
 .delete-photo-button {
   display: block;
-  width: 60%;
+  width: 65%;
   margin: 8px auto 0;
-  padding: 10px 14px;
+  padding: 14px 14px;
 
   background: black;
   color: #ffffff;
