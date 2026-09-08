@@ -177,6 +177,13 @@ if (itemPhotoKey && itemPhoto) {
   await saveToDatabase(itemPhotoKey, itemPhoto)
 }
 
+if (itemPhoto) {
+  setItemThumbnails((previous) => ({
+    ...previous,
+    [id]: itemPhoto,
+  }))
+}
+
 if (locationPhotoKey && locationPhoto) {
   await saveToDatabase(locationPhotoKey, locationPhoto)
 }
