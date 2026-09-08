@@ -87,6 +87,15 @@ const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
   
     reader.onload = () => {
       setPhoto(reader.result as string)
+  
+      setTimeout(() => {
+        document
+          .getElementById('save-item-button')
+          ?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+          })
+      }, 150)
     }
   
     reader.readAsDataURL(file)
@@ -460,8 +469,12 @@ setLocationPhoto(null)
 
 </div>
 
-<button onClick={saveItem}>Save item</button>
-        </div>
+<button
+  id="save-item-button"
+  onClick={saveItem}
+>
+  Save item
+</button>        </div>
       )}
 
 <button
