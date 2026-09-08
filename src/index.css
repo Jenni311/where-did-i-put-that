@@ -703,3 +703,38 @@ button:active {
   line-height: 1;
   cursor: pointer;
 }
+..collapse-item-button {
+  display: block;
+  width: 44px;
+  height: 36px;
+  margin: 14px auto 4px;
+  padding: 0;
+
+  background: transparent;
+  color: #292d32;
+  border: 0;
+
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+
+  cursor: pointer;
+}
+.collapse-item-button {
+  display: block;
+  width: 44px;
+  height: 36px;
+  margin: 14px auto 4px;
+  padding: 0;
+
+  background: transparent !important;
+  color: #292d32 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+
+  cursor: pointer;
+}

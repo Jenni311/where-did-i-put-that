@@ -835,7 +835,22 @@ const savedLocationPhoto = item.locationPhotoKey
       Delete
     </button>
   </div>
+
+  
 )}
+
+<button
+  type="button"
+  className="collapse-item-button"
+  onClick={() => {
+    setOpenItemId(null)
+    setOpenItemPhoto(null)
+    setOpenLocationPhoto(null)
+  }}
+  aria-label="Close item"
+>
+  <span>⌃</span>
+</button>
                   </div>
                 )}
           
