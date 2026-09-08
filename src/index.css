@@ -750,3 +750,16 @@ button:active {
   width: 70%;
   margin: 0 auto;
 }
+.saved-detail-label {
+  margin: 24px 0 4px;
+  color: #738478;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.saved-item-name,
+.saved-item-location {
+  margin: 0 0 12px;
+}

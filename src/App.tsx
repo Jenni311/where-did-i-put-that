@@ -626,12 +626,22 @@ const savedLocationPhoto = item.locationPhotoKey
           
                 {openItemId === item.id && (
                   <div className="saved-item-details">
-                    {editingItemId !== item.id && openItemPhoto && (
-  <img
-    className="saved-item-photo"
-    src={openItemPhoto}
-    alt="Saved item"
-  />
+{editingItemId !== item.id && (
+  <>
+    <p className="saved-detail-label">What is it?</p>
+
+    {item.name && (
+      <p className="saved-item-name">{item.name}</p>
+    )}
+
+    {openItemPhoto && (
+      <img
+        className="saved-item-photo"
+        src={openItemPhoto}
+        alt="Saved item"
+      />
+    )}
+  </>
 )}
          {editingItemId === item.id && (
   <div className="edit-form">
@@ -816,6 +826,8 @@ const savedLocationPhoto = item.locationPhotoKey
 )}
                     {editingItemId !== item.id && (
   <>
+    <p className="saved-detail-label">Where is it?</p>
+
     {item.location && (
       <p className="saved-item-location">{item.location}</p>
     )}
