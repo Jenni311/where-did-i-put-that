@@ -391,7 +391,7 @@ setLocationPhoto(null)
     }
   }}
 >
-  {showRememberForm ? 'Hide' : '+ Add a new item'}
+  {showRememberForm ? 'Hide' : '+ Save a new item'}
 </button>
 
 {showRememberForm && (
