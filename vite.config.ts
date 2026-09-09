@@ -25,6 +25,11 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
           },
+          {
+            src: '/where-did-i-put-that/APP-ICON-1024x1024.png',
+            sizes: '1024x1024',
+            type: 'image/png',
+          },
         ],
       },
     }),
