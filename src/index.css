@@ -185,7 +185,7 @@ button:active {
   color: #ffffff;
   text-align: center;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.2;
 }
 
@@ -237,12 +237,14 @@ button:active {
   align-items: center;
   gap: 40px;
   width: 100%;
+  font-size: 1.1rem;
 }
 
 .photo-choice-buttons .photo-button {
   flex: 0 0 auto;
   width: 35%;
   margin: 0;
+  font-size: 1.1rem;
 }
 
 
@@ -411,14 +413,14 @@ button:active {
   margin: 0;
   border-radius: 10px;
   padding: 11px 16px;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
 .edit-button {
   background: #ffb176;
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
@@ -426,7 +428,7 @@ button:active {
   margin-top: 16px;
   background: #515151;
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
@@ -450,21 +452,21 @@ button:active {
   margin: 0;
   padding: 12px 10px;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
 .save-edit-button {
   background: #748970;
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
 .cancel-edit-button {
   background: #e7e3dc;
   color: #374151;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
@@ -479,7 +481,7 @@ button:active {
 .photo-edit-actions .delete-photo-button {
   width: 70%;
   margin: 0 auto;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
@@ -490,7 +492,7 @@ button:active {
   gap: 16px;
   width: 100%;
   margin-top: 14px;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 }
 
@@ -499,7 +501,7 @@ button:active {
   width: 35%;
   margin: 0;
   padding: 12px 16px;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
 
   background: #60c3fd;
@@ -519,7 +521,7 @@ button:active {
   border: 0;
   border-radius: 12px;
 
-  font-size: 1rem;
+  font-size: 1.1rem;
 
   font-weight: 600;
 }
