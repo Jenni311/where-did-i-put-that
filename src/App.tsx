@@ -275,7 +275,7 @@ setLocationPhoto(null)
   />
 </div>
 
-<h2>Find something...</h2>
+<h2>Find your stuff...</h2>
 
 <div className="search-input-wrapper">
   <input
