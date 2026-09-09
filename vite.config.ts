@@ -24,6 +24,13 @@ export default defineConfig({
             src: '/where-did-i-put-that/APP-ICON-512x512.png',
             sizes: '512x512',
             type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: '/where-did-i-put-that/APP-ICON-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
           {
             src: '/where-did-i-put-that/APP-ICON-1024x1024.png',
