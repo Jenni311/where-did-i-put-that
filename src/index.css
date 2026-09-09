@@ -133,6 +133,8 @@ button {
   color: white;
   font-weight: 650;
   cursor: pointer;
+  font-size: 1rem;
+
 
   transition:
     transform 0.1s,
