@@ -763,3 +763,14 @@ button:active {
 .saved-item-location {
   margin: 0 0 12px;
 }
+.photo-choice-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.photo-choice-buttons .photo-button {
+  flex: 1;
+  width: auto;
+  margin: 0;
+}

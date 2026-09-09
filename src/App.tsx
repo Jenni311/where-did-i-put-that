@@ -408,24 +408,32 @@ setLocationPhoto(null)
 </label>
 
 <div className="photo-option">
+  <div className="photo-choice-buttons">
+    <label className="photo-button">
+      Add photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        onChange={(event) =>
+          handlePhotoChange(event, setItemPhoto)
+        }
+      />
+    </label>
 
-  <label className="photo-button">
-
-    Add photo
-
-    <input
-
-      className="photo-input"
-
-      type="file"
-
-      accept="image/*"
-
-      onChange={(event) => handlePhotoChange(event, setItemPhoto)}
-
-    />
-
-  </label>
+    <label className="photo-button">
+      Take photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(event) =>
+          handlePhotoChange(event, setItemPhoto)
+        }
+      />
+    </label>
+  </div>
 
   {itemPhoto && (
   <div className="photo-preview-wrapper">
