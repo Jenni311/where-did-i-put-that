@@ -683,17 +683,32 @@ const savedLocationPhoto = item.locationPhotoKey
   id={`edit-photo-actions-${item.id}`}
   className="photo-edit-actions"
 >
-    <label className="photo-button">
-      {item.itemPhotoKey ? 'Edit photo' : 'Add photo'}
-      <input
-        className="photo-input"
-        type="file"
-        accept="image/*"
-        onChange={(event) =>
-          handlePhotoChange(event, setEditItemPhoto)
-        }
-      />
-    </label>
+<div className="edit-photo-choice-buttons">
+  <label className="photo-button">
+    Choose photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      onChange={(event) =>
+        handlePhotoChange(event, setEditItemPhoto)
+      }
+    />
+  </label>
+
+  <label className="photo-button">
+    Take photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      onChange={(event) =>
+        handlePhotoChange(event, setEditItemPhoto)
+      }
+    />
+  </label>
+</div>
 
     {item.itemPhotoKey && (
       <button
@@ -763,17 +778,32 @@ const savedLocationPhoto = item.locationPhotoKey
     )}
 
     <div className="photo-option">
-      <label className="photo-button">
-        {item.locationPhotoKey ? 'Edit photo' : 'Add photo'}
-        <input
-          className="photo-input"
-          type="file"
-          accept="image/*"
-          onChange={(event) =>
-            handlePhotoChange(event, setEditLocationPhoto)
-          }
-        />
-      </label>
+    <div className="edit-photo-choice-buttons">
+  <label className="photo-button">
+    Choose photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      onChange={(event) =>
+        handlePhotoChange(event, setEditLocationPhoto)
+      }
+    />
+  </label>
+
+  <label className="photo-button">
+    Take photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      onChange={(event) =>
+        handlePhotoChange(event, setEditLocationPhoto)
+      }
+    />
+  </label>
+</div>
 
       {item.locationPhotoKey && (
         <button

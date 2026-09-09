@@ -767,7 +767,7 @@ button:active {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  gap: 40px;
   width: 100%;
 }
 
@@ -775,4 +775,19 @@ button:active {
   flex: 0 0 auto;
   width: 35%;
   margin: 0;
+}
+.edit-photo-choice-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.edit-photo-choice-buttons .photo-button {
+  flex: 0 0 auto;
+  width: 35%;
+  margin: 0;
+  font-size: 0.88rem;
 }
