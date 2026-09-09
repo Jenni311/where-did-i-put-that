@@ -419,7 +419,7 @@ setLocationPhoto(null)
         type="file"
         accept="image/*"
         onChange={(event) =>
-          handlePhotoChange(event, setLocationPhoto)
+          handlePhotoChange(event, setItemPhoto)
         }
       />
     </label>
@@ -432,7 +432,7 @@ setLocationPhoto(null)
         accept="image/*"
         capture="environment"
         onChange={(event) =>
-          handlePhotoChange(event, setLocationPhoto)
+          handlePhotoChange(event, setItemPhoto)
         }
       />
     </label>
@@ -478,7 +478,7 @@ setLocationPhoto(null)
         type="file"
         accept="image/*"
         onChange={(event) =>
-          handlePhotoChange(event, setItemPhoto)
+          handlePhotoChange(event, setLocationPhoto)
         }
       />
     </label>
@@ -491,7 +491,7 @@ setLocationPhoto(null)
         accept="image/*"
         capture="environment"
         onChange={(event) =>
-          handlePhotoChange(event, setItemPhoto)
+          handlePhotoChange(event, setLocationPhoto)
         }
       />
     </label>
