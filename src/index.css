@@ -801,3 +801,23 @@ button:active {
 color: white;
   border-color: #738478;
 }
+.saved-items-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.saved-items-sort label {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.saved-items-sort select {
+  padding: 8px 10px;
+  border: 1px solid #d5d9df;
+  border-radius: 10px;
+  background: #fffdf9;
+  color: #292d32;
+}

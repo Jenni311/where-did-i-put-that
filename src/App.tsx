@@ -30,6 +30,9 @@ function App() {
   const [editLocation, setEditLocation] = useState('')
   const [editItemPhoto, setEditItemPhoto] = useState<string | null>(null)
 const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(null)
+const [sortMode, setSortMode] = useState<
+  'alphabetical' | 'newest' | 'oldest'
+>('alphabetical')
 
 
   const [items, setItems] = useState<StoredItem[]>(() => {
@@ -555,6 +558,27 @@ setLocationPhoto(null)
           <div id="all-saved-items">
           <h2>All saved items</h2>
 
+          <div className="saved-items-sort">
+  <label htmlFor="sort-items">Sort by</label>
+
+  <select
+    id="sort-items"
+    value={sortMode}
+    onChange={(event) =>
+      setSortMode(
+        event.target.value as
+          | 'alphabetical'
+          | 'newest'
+          | 'oldest'
+      )
+    }
+  >
+    <option value="alphabetical">Alphabetically</option>
+    <option value="newest">Newest first</option>
+    <option value="oldest">Oldest first</option>
+  </select>
+</div>
+
           {items.length === 0 ? (
             <div className="empty-state">
             <p className="empty-state-title">Nothing here yet.</p>
@@ -565,9 +589,19 @@ setLocationPhoto(null)
           ) : (
 <div className="saved-items-list">
 {[...items]
-  .sort((a, b) =>
-    a.name.localeCompare(b.name, 'fi', { sensitivity: 'base' })
-  )
+  .sort((a, b) => {
+    if (sortMode === 'newest') {
+      return b.id - a.id
+    }
+
+    if (sortMode === 'oldest') {
+      return a.id - b.id
+    }
+
+    return a.name.localeCompare(b.name, 'fi', {
+      sensitivity: 'base',
+    })
+  })
   .map((item) => (
     <div
       id={`saved-item-${item.id}`}
