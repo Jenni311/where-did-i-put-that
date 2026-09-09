@@ -642,15 +642,6 @@ const savedLocationPhoto = item.locationPhotoKey
         block: 'end',
       })
   }, 150)
-  
-  setTimeout(() => {
-    document
-      .getElementById(`search-result-${item.id}`)
-      ?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      })
-  }, 100)
 }}
 >
 <div className="saved-item-top">
