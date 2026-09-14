@@ -772,3 +772,44 @@ button:active {
     bottom: 20px;
   }
 }
+/* ------------------------------
+   BUTTON SHADOWS
+------------------------------ */
+
+/* Normal action buttons */
+button {
+  box-shadow: 0 2px 5px rgba(31, 41, 51, 0.12);
+}
+
+button:hover {
+  box-shadow: 0 3px 7px rgba(31, 41, 51, 0.16);
+}
+
+button:active {
+  box-shadow: 0 1px 3px rgba(31, 41, 51, 0.10);
+}
+
+/* Photo buttons are labels rather than actual <button> elements */
+.photo-button {
+  box-shadow: 0 2px 5px rgba(31, 41, 51, 0.12);
+  transition:
+    transform 0.1s,
+    opacity 0.2s,
+    box-shadow 0.2s;
+}
+
+.photo-button:hover {
+  box-shadow: 0 3px 7px rgba(31, 41, 51, 0.16);
+  opacity: 0.9;
+}
+
+.photo-button:active {
+  box-shadow: 0 1px 3px rgba(31, 41, 51, 0.10);
+  transform: translateY(1px);
+}
+
+/* Saved items themselves stay completely flat */
+.saved-item,
+.saved-item-toggle {
+  box-shadow: none;
+}
