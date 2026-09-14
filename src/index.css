@@ -887,7 +887,7 @@ button:active {
 @media (min-width: 501px) and (max-width: 900px) {
   .hero-image {
     width: 48%;
-    top: 180px;
+    top: 140px;
     right: -2%;
   }
 
