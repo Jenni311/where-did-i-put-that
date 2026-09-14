@@ -716,7 +716,7 @@ button:active {
   margin: 26px 0 0 8px;
   color: #748970;
   font-family: 'Caveat', cursive;
-  font-size: 1.9rem;
+  font-size: 2rem;
   font-weight: 600;
   line-height: 0.95;
   transform: rotate(-4deg);
@@ -763,7 +763,7 @@ button:active {
 
   .hero-tagline {
     margin-top: 25px;
-    font-size: 1.7rem;
+    font-size: 1.9rem;
   }
 
   .hero-image {
