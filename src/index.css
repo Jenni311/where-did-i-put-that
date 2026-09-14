@@ -942,7 +942,7 @@ button:active {
 
 
   width: 45%;
-  margin: 30px auto 0;
+  margin: 27px auto 0;
 
   background: #5d8fb4;
   color: white;
@@ -954,7 +954,7 @@ button:active {
   font-size: 0.9rem;
   cursor: pointer;
 
-  padding: 5px 20px 5px;
+  padding: 5px 18px 5px;
 
 }
 
@@ -969,9 +969,9 @@ button:active {
   justify-content: center;
   gap: 8px;
 
-  width: 45%;
+  width: 40%;
   margin: 10px auto 0;
-  padding: 5px 20px 5px;
+  padding: 5px 15px 5px;
 
   background: #515151;
   color: white;
@@ -1003,4 +1003,18 @@ button:active {
 
 .restore-button input {
   display: none;
+}
+.data-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.data-buttons .backup-button,
+.data-buttons .restore-button {
+  width: 135px;
+  margin: 0;
 }
