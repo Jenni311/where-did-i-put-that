@@ -4,7 +4,7 @@ import {
   getFromDatabase,
   saveToDatabase,
 } from './db'
-import heroItems from './assets/hero2.png'
+import heroItems from './assets/black-cat-hero-2.png'
 type StoredItem = {
   id: number
   name: string
