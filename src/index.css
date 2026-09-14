@@ -896,3 +896,14 @@ button:active {
     margin-bottom: 20px;
   }
 }
+/* ------------------------------
+   DESKTOP HERO
+------------------------------ */
+
+@media (min-width: 901px) {
+  .hero-image {
+    width: 48%;
+    top: 100px;
+    right: -2%;
+  }
+}
