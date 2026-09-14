@@ -262,9 +262,9 @@ setLocationPhoto(null)
 </p>
 
     <p className="hero-tagline">
-    For everything you've 
-      <br />
-      put somewhere
+    For everything 
+    <br />you've put 
+    <br />somewhere
     </p>
   </div>
 

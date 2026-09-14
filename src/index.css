@@ -813,3 +813,70 @@ button:active {
 .saved-item-toggle {
   box-shadow: none;
 }
+/* ------------------------------
+   NEW CAT HERO
+------------------------------ */
+
+.hero {
+  position: relative;
+
+  width: 100%;
+  height: auto;
+  min-height: 0;
+
+  margin: 0 0 35px;
+  padding: 0 0 150px;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+}
+
+.hero-image {
+  position: absolute;
+  z-index: 1;
+
+  width: 50%;
+  max-width: none;
+  height: auto;
+
+  top: 245px;
+  right: -5%;
+  bottom: auto;
+  left: auto;
+
+  margin: 0;
+  padding: 0;
+
+  transform: none;
+
+  object-fit: contain;
+  pointer-events: none;
+}
+
+@media (max-width: 500px) {
+  .hero {
+    height: auto;
+    min-height: 0;
+
+    margin-bottom: 30px;
+    padding-bottom: 60px;
+  }
+
+  .hero-text {
+    width: 100%;
+  }
+
+  .hero-image {
+    width: 52%;
+
+    top: 150px;
+    right: -6%;
+
+    margin: 0;
+    transform: none;
+  }
+}
