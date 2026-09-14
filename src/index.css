@@ -1053,3 +1053,14 @@ button:active {
   width: 135px;
   margin: 0;
 }
+.lending-options {
+  width: 100%;
+  margin-top: 24px;
+  text-align: center;
+}
+
+.lending-options {
+  width: 100%;
+  margin: 16px 0 4px;
+  text-align: center;
+}
