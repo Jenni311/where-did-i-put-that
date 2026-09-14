@@ -35,220 +35,374 @@ const [sortMode, setSortMode] = useState<
 >('alphabetical')
 
 
-  const [items, setItems] = useState<StoredItem[]>(() => {
-    const savedItems = localStorage.getItem('storedItems')
+const [items, setItems] = useState<StoredItem[]>(() => {
+  const savedItems = localStorage.getItem('storedItems')
 
-    if (savedItems) {
-      return JSON.parse(savedItems)
-    }
+  if (savedItems) {
+    return JSON.parse(savedItems)
+  }
 
-    return []
-  })
-  useEffect(() => {
-    localStorage.setItem('storedItems', JSON.stringify(items))
-  }, [items])
+  return []
+})
 
-  useEffect(() => {
-    let cancelled = false
-  
-    async function loadThumbnails() {
-      const thumbnails: Record<number, string> = {}
-  
-      for (const item of items) {
-        if (item.itemPhotoKey) {
-          const photo = await getFromDatabase<string>(item.itemPhotoKey)
-  
-          if (photo) {
-            thumbnails[item.id] = photo
-          }
+useEffect(() => {
+  localStorage.setItem('storedItems', JSON.stringify(items))
+}, [items])
+
+useEffect(() => {
+  let cancelled = false
+
+  async function loadThumbnails() {
+    const thumbnails: Record<number, string> = {}
+
+    for (const item of items) {
+      if (item.itemPhotoKey) {
+        const photo = await getFromDatabase<string>(item.itemPhotoKey)
+
+        if (photo) {
+          thumbnails[item.id] = photo
         }
       }
-  
-      if (!cancelled) {
-        setItemThumbnails(thumbnails)
-      }
     }
-  
-    loadThumbnails()
-  
-    return () => {
-      cancelled = true
-    }
-  }, [items])
 
-  function handlePhotoChange(
-    event: React.ChangeEvent<HTMLInputElement>,
-    setPhoto: (photo: string | null) => void
-  ) {
-    const file = event.target.files?.[0]
-  
-    if (!file) {
-      return
-    }
-  
-    const reader = new FileReader()
-  
-    reader.onload = () => {
-      setPhoto(reader.result as string)
-  
-      setTimeout(() => {
-        document
-          .getElementById('save-item-button')
-          ?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'end',
-          })
-      }, 150)
-    }
-  
-    reader.readAsDataURL(file)
-  }
-  async function deleteItem(item: StoredItem) {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${
-        item.name || 'this item'
-      }? This will also delete its saved photos.`
-    )
-  
-    if (!confirmed) {
-      return
-    }
-  
-    if (item.itemPhotoKey) {
-      await deleteFromDatabase(item.itemPhotoKey)
-    }
-  
-    if (item.locationPhotoKey) {
-      await deleteFromDatabase(item.locationPhotoKey)
-    }
-  
-    const updatedItems = items.filter(
-      (savedItem) => savedItem.id !== item.id
-    )
-  
-    setItems(updatedItems)
-  
-    setItemThumbnails((previous) => {
-      const updated = { ...previous }
-      delete updated[item.id]
-      return updated
-    })
-  
-    if (openItemId === item.id) {
-      setOpenItemId(null)
-      setOpenItemPhoto(null)
-      setOpenLocationPhoto(null)
+    if (!cancelled) {
+      setItemThumbnails(thumbnails)
     }
   }
-  
-  async function saveEditedItem() {
-    if (editingItemId === null) {
-      return
-    }
-  
-    const itemToEdit = items.find(
-      (item) => item.id === editingItemId
-    )
-  
-    if (!itemToEdit) {
-      return
-    }
-  
-    let itemPhotoKey = itemToEdit.itemPhotoKey
-    let locationPhotoKey = itemToEdit.locationPhotoKey
-  
-    if (editItemPhoto) {
-      itemPhotoKey =
-        itemPhotoKey || `item-photo-${editingItemId}`
-  
-      await saveToDatabase(itemPhotoKey, editItemPhoto)
-  
-      setItemThumbnails((previous) => ({
-        ...previous,
-        [editingItemId]: editItemPhoto,
-      }))
-    }
-  
-    if (editLocationPhoto) {
-      locationPhotoKey =
-        locationPhotoKey || `location-photo-${editingItemId}`
-  
-      await saveToDatabase(locationPhotoKey, editLocationPhoto)
-    }
-  
-    const updatedItems = items.map((item) =>
-      item.id === editingItemId
-        ? {
-            ...item,
-            name: editName,
-            location: editLocation,
-            itemPhotoKey,
-            locationPhotoKey,
-          }
-        : item
-    )
-  
-    setItems(updatedItems)
-  
-    if (editItemPhoto) {
-      setOpenItemPhoto(editItemPhoto)
-    }
-  
-    if (editLocationPhoto) {
-      setOpenLocationPhoto(editLocationPhoto)
-    }
-  
-    setEditingItemId(null)
-    setEditName('')
-    setEditLocation('')
-    setEditItemPhoto(null)
-    setEditLocationPhoto(null)
+
+  loadThumbnails()
+
+  return () => {
+    cancelled = true
   }
-  async function saveItem() {
-    if ((!itemName.trim() && !itemPhoto) || (!location.trim() && !locationPhoto)) {
-      return
-    }
+}, [items])
 
-    const id = Date.now()
+function handlePhotoChange(
+  event: React.ChangeEvent<HTMLInputElement>,
+  setPhoto: (photo: string | null) => void
+) {
+  const file = event.target.files?.[0]
 
-const itemPhotoKey = itemPhoto ? `item-photo-${id}` : undefined
-const locationPhotoKey = locationPhoto ? `location-photo-${id}` : undefined
-
-if (itemPhotoKey && itemPhoto) {
-  await saveToDatabase(itemPhotoKey, itemPhoto)
-}
-
-if (itemPhoto) {
-  setItemThumbnails((previous) => ({
-    ...previous,
-    [id]: itemPhoto,
-  }))
-}
-
-if (locationPhotoKey && locationPhoto) {
-  await saveToDatabase(locationPhotoKey, locationPhoto)
-}
-
-const newItem: StoredItem = {
-  id,
-  name: itemName,
-  location: location,
-  itemPhotoKey,
-  locationPhotoKey,
-}
-
-    setItems([...items, newItem])
-    setItemName('')
-    setLocation('')
-    setItemPhoto(null)
-setLocationPhoto(null)
-    setShowRememberForm(false)
+  if (!file) {
+    return
   }
 
-  const searchResults = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+  const reader = new FileReader()
+
+  reader.onload = () => {
+    setPhoto(reader.result as string)
+
+    setTimeout(() => {
+      document
+        .getElementById('save-item-button')
+        ?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        })
+    }, 150)
+  }
+
+  reader.readAsDataURL(file)
+}
+
+async function deleteItem(item: StoredItem) {
+  const confirmed = window.confirm(
+    `Are you sure you want to delete ${
+      item.name || 'this item'
+    }? This will also delete its saved photos.`
   )
 
+  if (!confirmed) {
+    return
+  }
+
+  if (item.itemPhotoKey) {
+    await deleteFromDatabase(item.itemPhotoKey)
+  }
+
+  if (item.locationPhotoKey) {
+    await deleteFromDatabase(item.locationPhotoKey)
+  }
+
+  const updatedItems = items.filter(
+    (savedItem) => savedItem.id !== item.id
+  )
+
+  setItems(updatedItems)
+
+  setItemThumbnails((previous) => {
+    const updated = { ...previous }
+    delete updated[item.id]
+    return updated
+  })
+
+  if (openItemId === item.id) {
+    setOpenItemId(null)
+    setOpenItemPhoto(null)
+    setOpenLocationPhoto(null)
+  }
+}
+
+async function saveEditedItem() {
+  if (editingItemId === null) {
+    return
+  }
+
+  const itemToEdit = items.find(
+    (item) => item.id === editingItemId
+  )
+
+  if (!itemToEdit) {
+    return
+  }
+
+  let itemPhotoKey = itemToEdit.itemPhotoKey
+  let locationPhotoKey = itemToEdit.locationPhotoKey
+
+  if (editItemPhoto) {
+    itemPhotoKey =
+      itemPhotoKey || `item-photo-${editingItemId}`
+
+    await saveToDatabase(itemPhotoKey, editItemPhoto)
+
+    setItemThumbnails((previous) => ({
+      ...previous,
+      [editingItemId]: editItemPhoto,
+    }))
+  }
+
+  if (editLocationPhoto) {
+    locationPhotoKey =
+      locationPhotoKey || `location-photo-${editingItemId}`
+
+    await saveToDatabase(locationPhotoKey, editLocationPhoto)
+  }
+
+  const updatedItems = items.map((item) =>
+    item.id === editingItemId
+      ? {
+          ...item,
+          name: editName,
+          location: editLocation,
+          itemPhotoKey,
+          locationPhotoKey,
+        }
+      : item
+  )
+
+  setItems(updatedItems)
+
+  if (editItemPhoto) {
+    setOpenItemPhoto(editItemPhoto)
+  }
+
+  if (editLocationPhoto) {
+    setOpenLocationPhoto(editLocationPhoto)
+  }
+
+  setEditingItemId(null)
+  setEditName('')
+  setEditLocation('')
+  setEditItemPhoto(null)
+  setEditLocationPhoto(null)
+}
+
+async function saveItem() {
+  if (
+    (!itemName.trim() && !itemPhoto) ||
+    (!location.trim() && !locationPhoto)
+  ) {
+    return
+  }
+
+  const id = Date.now()
+
+  const itemPhotoKey = itemPhoto
+    ? `item-photo-${id}`
+    : undefined
+
+  const locationPhotoKey = locationPhoto
+    ? `location-photo-${id}`
+    : undefined
+
+  if (itemPhotoKey && itemPhoto) {
+    await saveToDatabase(itemPhotoKey, itemPhoto)
+  }
+
+  if (itemPhoto) {
+    setItemThumbnails((previous) => ({
+      ...previous,
+      [id]: itemPhoto,
+    }))
+  }
+
+  if (locationPhotoKey && locationPhoto) {
+    await saveToDatabase(
+      locationPhotoKey,
+      locationPhoto
+    )
+  }
+
+  const newItem: StoredItem = {
+    id,
+    name: itemName,
+    location,
+    itemPhotoKey,
+    locationPhotoKey,
+  }
+
+  setItems([...items, newItem])
+  setItemName('')
+  setLocation('')
+  setItemPhoto(null)
+  setLocationPhoto(null)
+  setShowRememberForm(false)
+}
+
+const searchResults = items.filter((item) =>
+  item.name
+    .toLowerCase()
+    .includes(search.toLowerCase())
+)
+
+async function backupData() {
+  const itemsWithPhotos = []
+
+  for (const item of items) {
+    const itemPhoto = item.itemPhotoKey
+      ? await getFromDatabase<string>(
+          item.itemPhotoKey
+        )
+      : null
+
+    const locationPhoto =
+      item.locationPhotoKey
+        ? await getFromDatabase<string>(
+            item.locationPhotoKey
+          )
+        : null
+
+    itemsWithPhotos.push({
+      ...item,
+      itemPhoto,
+      locationPhoto,
+    })
+  }
+
+  const backup = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    items: itemsWithPhotos,
+  }
+
+  const blob = new Blob(
+    [JSON.stringify(backup, null, 2)],
+    { type: 'application/json' }
+  )
+
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+
+  link.href = url
+  link.download = `where-did-i-put-that-backup-${new Date()
+    .toISOString()
+    .slice(0, 10)}.json`
+
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+
+  URL.revokeObjectURL(url)
+}
+
+async function restoreData(
+  event: React.ChangeEvent<HTMLInputElement>
+) {
+  const file = event.target.files?.[0]
+
+  if (!file) {
+    return
+  }
+
+  try {
+    const text = await file.text()
+    const backup = JSON.parse(text)
+
+    if (
+      !backup ||
+      backup.version !== 1 ||
+      !Array.isArray(backup.items)
+    ) {
+      window.alert('This does not look like a valid backup file.')
+      return
+    }
+
+    const confirmed = window.confirm(
+      'Restore this backup? Existing items will be kept, and matching items will be updated.'
+    )
+
+    if (!confirmed) {
+      event.target.value = ''
+      return
+    }
+
+    const restoredItems: StoredItem[] = []
+
+    for (const backupItem of backup.items) {
+      const {
+        itemPhoto,
+        locationPhoto,
+        ...storedItem
+      } = backupItem
+
+      if (storedItem.itemPhotoKey && itemPhoto) {
+        await saveToDatabase(
+          storedItem.itemPhotoKey,
+          itemPhoto
+        )
+      }
+
+      if (
+        storedItem.locationPhotoKey &&
+        locationPhoto
+      ) {
+        await saveToDatabase(
+          storedItem.locationPhotoKey,
+          locationPhoto
+        )
+      }
+
+      restoredItems.push(storedItem)
+    }
+
+    setItems((currentItems) => {
+      const merged = new Map<number, StoredItem>()
+
+      for (const item of currentItems) {
+        merged.set(item.id, item)
+      }
+
+      for (const item of restoredItems) {
+        merged.set(item.id, item)
+      }
+
+      return Array.from(merged.values())
+    })
+
+    window.alert('Backup restored successfully.')
+
+    event.target.value = ''
+  } catch (error) {
+    console.error(error)
+
+    window.alert(
+      'The backup could not be restored. Please check that you selected the correct file.'
+    )
+
+    event.target.value = ''
+  }
+}
   return (
     <main>
      <div className="hero">
@@ -967,6 +1121,43 @@ const savedLocationPhoto = item.locationPhotoKey
                     )}
                   </div>
                 )}
+
+<button
+  type="button"
+  className="backup-button"
+  onClick={backupData}
+>
+  <svg
+    className="backup-icon"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v4h14v-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+
+  <span>Backup 
+    <br/>
+    your data</span>
+</button>
+
+<label className="restore-button">
+  <span className="restore-arrow">↑</span>
+  <span className="restore-text">Restore <br/> your data</span>
+
+  <input
+    type="file"
+    accept=".json,application/json"
+    onChange={restoreData}
+  />
+</label>
+
     </main>
   )
 }

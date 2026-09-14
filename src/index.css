@@ -537,7 +537,7 @@ button:active {
 
 .search-result {
   margin-bottom: 10px;
-  border: 1px solid #d5d9df;
+  border: 1px solid #afb1b6;
   border-radius: 14px;
   background: #fffdf9;
   overflow: hidden;
@@ -906,4 +906,101 @@ button:active {
     top: 100px;
     right: -2%;
   }
+}
+/*.backup-button {
+  display: block;
+  background: #5d8fb4;
+  color: white;
+  width: 40%;
+  border: 0;
+  border-radius: 12px;
+  margin: 30px auto 0;
+  font-weight: 550;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 5px 20px 5px;
+  
+}
+
+.backup-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.backup-icon {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+}*/
+
+.backup-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+
+  width: 45%;
+  margin: 30px auto 0;
+
+  background: #5d8fb4;
+  color: white;
+
+  border: 0;
+  border-radius: 12px;
+
+  font-weight: 650;
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  padding: 5px 20px 5px;
+
+}
+
+.backup-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.restore-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 45%;
+  margin: 10px auto 0;
+  padding: 5px 20px 5px;
+
+  background: #515151;
+  color: white;
+
+  border-radius: 12px;
+
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.2;
+
+  text-align: center;
+  cursor: pointer;
+
+  box-shadow: 0 2px 5px rgba(31, 41, 51, 0.12);
+}
+
+.restore-arrow {
+  font-size: 1.2rem;
+  font-weight: 650;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.restore-text {
+  display: block;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.restore-button input {
+  display: none;
 }
