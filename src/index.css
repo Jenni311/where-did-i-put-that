@@ -863,7 +863,7 @@ button:active {
     min-height: 0;
 
     margin-bottom: 30px;
-    padding-bottom: 70px;
+    padding-bottom: 100px;
   }
 
   .hero-text {
@@ -871,7 +871,7 @@ button:active {
   }
 
   .hero-image {
-    width: 70%;
+    width: 65%;
 
     top: 150px;
     right: -6%;
