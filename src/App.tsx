@@ -42,6 +42,15 @@ function App() {
     'alphabetical' | 'newest' | 'oldest'
   >('alphabetical')
 
+  
+
+  const [itemCategory, setItemCategory] = useState<
+  'all' | 'put-away' | 'lent-out'
+>('all')
+
+
+
+
   const [items, setItems] = useState<StoredItem[]>(() => {
     const savedItems = localStorage.getItem('storedItems')
 
@@ -724,6 +733,7 @@ function App() {
             setOpenItemId(null)
             setOpenItemPhoto(null)
             setOpenLocationPhoto(null)
+            setItemCategory('all')
           }
 
           if (opening) {
@@ -742,6 +752,33 @@ function App() {
       {showAll && (
         <div id="all-saved-items">
           <h2>All saved items</h2>
+
+          <div className="saved-items-categories">
+
+          <button
+  type="button"
+  className={itemCategory === 'all' ? 'active' : ''}
+  onClick={() => setItemCategory('all')}
+>
+  All
+</button>
+
+  <button
+    type="button"
+    className={itemCategory === 'put-away' ? 'active' : ''}
+    onClick={() => setItemCategory('put-away')}
+  >
+    Put away
+  </button>
+
+  <button
+    type="button"
+    className={itemCategory === 'lent-out' ? 'active' : ''}
+    onClick={() => setItemCategory('lent-out')}
+  >
+    Lent out
+  </button>
+</div>
 
           <div className="saved-items-sort">
             <label htmlFor="sort-items">Sort by</label>
@@ -770,21 +807,19 @@ function App() {
             </div>
           ) : (
             <div className="saved-items-list">
-              {[...items]
-                .sort((a, b) => {
-                  if (sortMode === 'newest') {
-                    return b.id - a.id
-                  }
-
-                  if (sortMode === 'oldest') {
-                    return a.id - b.id
-                  }
-
-                  return a.name.localeCompare(b.name, 'fi', {
-                    sensitivity: 'base',
-                  })
-                })
-                .map((item) => (
+            {items
+              .filter((item) => {
+                if (itemCategory === 'lent-out') {
+                  return Boolean(item.lentTo)
+                }
+              
+                if (itemCategory === 'put-away') {
+                  return !item.lentTo
+                }
+              
+                return true
+              })
+              .map((item) => (
                   <div
                     id={`saved-item-${item.id}`}
                     className={`saved-item ${

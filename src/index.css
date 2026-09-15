@@ -1064,3 +1064,35 @@ button:active {
   margin: 16px 0 4px;
   text-align: center;
 }
+.saved-items-categories {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.saved-items-categories button {
+  width: auto;
+  padding: 8px 16px;
+
+  background: transparent;
+  color: #68707d;
+
+  border: 1px solid #d5d9df;
+  border-radius: 999px;
+
+  box-shadow: none;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.saved-items-categories button.active {
+  background: #738478;
+  color: white;
+  border-color: #738478;
+}
+
+.saved-items-categories button:hover {
+  box-shadow: none;
+}
