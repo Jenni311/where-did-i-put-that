@@ -41,7 +41,7 @@ function App() {
   const [sortMode, setSortMode] = useState<
     'alphabetical' | 'newest' | 'oldest'
   >('alphabetical')
-
+  const [saveMessage, setSaveMessage] = useState('')
   
 
   const [itemCategory, setItemCategory] = useState<
@@ -264,6 +264,13 @@ function App() {
     setLocation('')
     setItemPhoto(null)
     setLocationPhoto(null)
+    
+    setSaveMessage('Saved ✓')
+    
+    setTimeout(() => {
+      setSaveMessage('')
+    }, 3000)
+    
     setShowRememberForm(false)
   }
 
@@ -284,6 +291,12 @@ function App() {
     })
     setLentItemName('')
     setLentTo('')
+
+    setSaveMessage('Lent item saved ✓')
+
+setTimeout(() => {
+  setSaveMessage('')
+}, 3000)
     setShowLendingForm(false)
   }
 
@@ -625,6 +638,7 @@ function App() {
                 </button>
               </div>
             )}
+           
           </div>
           <label>
             Where did you put it?
@@ -688,7 +702,7 @@ function App() {
         </div>
       )}
 
-{showRememberForm && (
+{showRememberForm && !saveMessage && (
   <div className="lending-options">
     <button
       type="button"
@@ -745,6 +759,11 @@ function App() {
         </button>
       </form>
     )}
+  </div>
+)}
+{saveMessage && (
+  <div className="save-message">
+    {saveMessage}
   </div>
 )}
       <button

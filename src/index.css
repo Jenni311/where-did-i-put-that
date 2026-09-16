@@ -1102,9 +1102,19 @@ button:active {
 }
 
 .saved-items-categories + .saved-items-sort + .empty-state .empty-state-title {
-  color: #68707d;
+  color: #738478;
   font-size: 0.95rem;
   font-weight: 650;
   text-align: center;
   margin: 0;
+}
+.save-message {
+  margin: 14px 0 4px;
+  text-align: center;
+  color: #738478;
+  font-size: 1rem;
+  font-weight: 650;
+}
+.lending-options .more-button {
+  color: #738478;
 }
