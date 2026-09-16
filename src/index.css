@@ -442,7 +442,7 @@ button:active {
   padding: 6px 12px;
 
   background: transparent;
-  color: #68707d;
+  color: #738478;;
 
   border: 0;
   box-shadow: none;
@@ -1114,7 +1114,4 @@ button:active {
   color: #738478;
   font-size: 1rem;
   font-weight: 650;
-}
-.lending-options .more-button {
-  color: #738478;
 }
