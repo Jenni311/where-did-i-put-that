@@ -1096,3 +1096,17 @@ button:active {
 .saved-items-categories button:hover {
   box-shadow: none;
 }
+.saved-items-categories + .saved-items-sort + .empty-state {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 24px 0;
+}
+
+.saved-items-categories + .saved-items-sort + .empty-state .empty-state-title {
+  color: #68707d;
+  font-size: 0.95rem;
+  font-weight: 650;
+  text-align: center;
+  margin: 0;
+}
