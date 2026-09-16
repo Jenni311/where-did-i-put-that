@@ -156,8 +156,6 @@ button:active {
 .view-all-button {
   margin-top: 12px;
   background: #738478;
-  color: white;
-  border: 0;
 }
 
 .remember-form {
@@ -1079,7 +1077,7 @@ button:active {
   color: #68707d;
 
   border: 1px solid #d5d9df;
-  border-radius: 999px;
+  border-radius: 12px;
 
   box-shadow: none;
 
