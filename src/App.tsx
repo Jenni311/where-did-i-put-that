@@ -406,6 +406,31 @@ function App() {
       event.target.value = ''
     }
   }
+  const visibleItems = items
+  .filter((item) => {
+    if (itemCategory === 'lent-out') {
+      return Boolean(item.lentTo)
+    }
+
+    if (itemCategory === 'put-away') {
+      return !item.lentTo
+    }
+
+    return true
+  })
+  .sort((a, b) => {
+    if (sortMode === 'newest') {
+      return b.id - a.id
+    }
+
+    if (sortMode === 'oldest') {
+      return a.id - b.id
+    }
+
+    return a.name.localeCompare(b.name, 'fi', {
+      sensitivity: 'base',
+    })
+  })
   return (
     <main>
       <div className="hero">
@@ -799,27 +824,58 @@ function App() {
           </div>
 
           {items.length === 0 ? (
-            <div className="empty-state">
-              <p className="empty-state-title">Nothing here yet.</p>
-              <p className="empty-state-text">
-                Add your first item and you'll know exactly where to find it.
-              </p>
-            </div>
-          ) : (
-            <div className="saved-items-list">
-            {items
-              .filter((item) => {
-                if (itemCategory === 'lent-out') {
-                  return Boolean(item.lentTo)
-                }
-              
-                if (itemCategory === 'put-away') {
-                  return !item.lentTo
-                }
-              
-                return true
-              })
-              .map((item) => (
+  <div className="empty-state">
+    <p className="empty-state-title">Nothing here yet.</p>
+    <p className="empty-state-text">
+      Add your first item and you'll know exactly where to find it.
+    </p>
+  </div>
+) : items.filter((item) => {
+    if (itemCategory === 'lent-out') {
+      return Boolean(item.lentTo)
+    }
+
+    if (itemCategory === 'put-away') {
+      return !item.lentTo
+    }
+
+    return true
+  }).length === 0 ? (
+    <div className="empty-state">
+      <p className="empty-state-title">
+        {itemCategory === 'lent-out'
+          ? 'Nothing lent out at the moment.'
+          : 'Nothing put away yet.'}
+      </p>
+    </div>
+  ) : (
+    <div className="saved-items-list">
+      {items
+        .filter((item) => {
+          if (itemCategory === 'lent-out') {
+            return Boolean(item.lentTo)
+          }
+
+          if (itemCategory === 'put-away') {
+            return !item.lentTo
+          }
+
+          return true
+        })
+        .sort((a, b) => {
+          if (sortMode === 'newest') {
+            return b.id - a.id
+          }
+        
+          if (sortMode === 'oldest') {
+            return a.id - b.id
+          }
+        
+          return a.name.localeCompare(b.name, 'fi', {
+            sensitivity: 'base',
+          })
+        })
+        .map((item) => (
                   <div
                     id={`saved-item-${item.id}`}
                     className={`saved-item ${
