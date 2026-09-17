@@ -419,31 +419,6 @@ setTimeout(() => {
       event.target.value = ''
     }
   }
-  const visibleItems = items
-  .filter((item) => {
-    if (itemCategory === 'lent-out') {
-      return Boolean(item.lentTo)
-    }
-
-    if (itemCategory === 'put-away') {
-      return !item.lentTo
-    }
-
-    return true
-  })
-  .sort((a, b) => {
-    if (sortMode === 'newest') {
-      return b.id - a.id
-    }
-
-    if (sortMode === 'oldest') {
-      return a.id - b.id
-    }
-
-    return a.name.localeCompare(b.name, 'fi', {
-      sensitivity: 'base',
-    })
-  })
   return (
     <main>
       <div className="hero">
