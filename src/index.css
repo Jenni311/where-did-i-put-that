@@ -843,7 +843,9 @@ button:active {
 
 /* Saved items themselves stay completely flat */
 .saved-item,
-.saved-item-toggle {
+.saved-item-toggle,
+.saved-item-toggle:hover,
+.saved-item-toggle:active {
   box-shadow: none;
 }
 /* ------------------------------
@@ -1114,4 +1116,22 @@ button:active {
   color: #738478;
   font-size: 1rem;
   font-weight: 650;
+}
+#lending-form,
+#remember-form 
+#all-saved-items {
+  animation: reveal-section 0.22s ease-out;
+  transform-origin: top;
+}
+
+@keyframes reveal-section {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
