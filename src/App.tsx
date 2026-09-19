@@ -42,6 +42,7 @@ function App() {
     'alphabetical' | 'newest' | 'oldest'
   >('alphabetical')
   const [saveMessage, setSaveMessage] = useState('')
+  const [isRememberFormClosing, setIsRememberFormClosing] = useState(false)
   
 
   const [itemCategory, setItemCategory] = useState<
@@ -265,13 +266,17 @@ function App() {
     setItemPhoto(null)
     setLocationPhoto(null)
     
-    setSaveMessage('Saved ✓')
-    
+    setIsRememberFormClosing(true)
+
     setTimeout(() => {
-      setSaveMessage('')
-    }, 3000)
+      setShowRememberForm(false)
+      setIsRememberFormClosing(false)
+      setSaveMessage('Saved ✓')
     
-    setShowRememberForm(false)
+      setTimeout(() => {
+        setSaveMessage('')
+      }, 3000)
+    }, 300)
   }
 
   function saveLentItem() {
@@ -565,7 +570,10 @@ setTimeout(() => {
       </button>
 
       {showRememberForm && (
-        <div id="remember-form" className="remember-form">
+        <div
+        id="remember-form"
+        className={`remember-form${isRememberFormClosing ? ' closing' : ''}`}
+      >
           <label>
             What is it?
             <input

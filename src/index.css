@@ -114,7 +114,7 @@ input::placeholder {
 }
 
 input:focus {
-  border-color: #313234;
+  border-color: #acacac;
   box-shadow: 0 0 0 3px rgba(83, 103, 216, 0.15);
 }
 
@@ -1118,20 +1118,36 @@ button:active {
   font-weight: 650;
 }
 #lending-form,
-#remember-form 
+#remember-form,
 #all-saved-items {
-  animation: reveal-section 0.22s ease-out;
-  transform-origin: top;
+  animation: reveal-section 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: top center;
 }
 
 @keyframes reveal-section {
   from {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-4px) scale(0.995);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+  }
+}
+#remember-form.closing {
+  animation: hide-section 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes hide-section {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.995);
   }
 }
