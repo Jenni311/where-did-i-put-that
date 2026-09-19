@@ -119,6 +119,12 @@ function App() {
           behavior: 'smooth',
           block: 'end',
         })
+        setTimeout(() => {
+          window.scrollBy({
+            top: 80,
+            behavior: 'smooth',
+          })
+        }, 300)
       }, 150)
     }
 
