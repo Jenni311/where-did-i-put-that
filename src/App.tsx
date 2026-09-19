@@ -570,10 +570,10 @@ setTimeout(() => {
       </button>
 
       {showRememberForm && (
-        <div
-        id="remember-form"
-        className={`remember-form${isRememberFormClosing ? ' closing' : ''}`}
-      >
+       <div
+       id="remember-form"
+       className={`remember-form${isRememberFormClosing ? ' closing' : ''}`}
+     >
           <label>
             What is it?
             <input
@@ -749,35 +749,34 @@ setTimeout(() => {
     {saveMessage}
   </div>
 )}
-      <button
-        className="view-all-button"
-        onClick={() => {
-          const opening = !showAll
+    <button
+  className="view-all-button"
+  onClick={() => {
+    const opening = !showAll
+    setShowAll(opening)
 
-          setShowAll(opening)
+    if (!opening) {
+      setOpenItemId(null)
+      setOpenItemPhoto(null)
+      setOpenLocationPhoto(null)
+      setItemCategory('all')
+    }
 
-          if (!opening) {
-            setOpenItemId(null)
-            setOpenItemPhoto(null)
-            setOpenLocationPhoto(null)
-            setItemCategory('all')
-          }
-
-          if (opening) {
-            setTimeout(() => {
-              document.getElementById('all-saved-items')?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-              })
-            }, 100)
-          }
-        }}
-      >
-        {showAll ? 'Hide saved items' : 'View all saved items'}
-      </button>
+    if (opening) {
+      setTimeout(() => {
+        document.getElementById('all-saved-items')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      }, 100)
+    }
+  }}
+>
+  {showAll ? 'Hide saved items' : 'View all saved items'}
+</button>
 
       {showAll && (
-        <div id="all-saved-items">
+       <div id="all-saved-items">
           <h2>All saved items</h2>
 
           <div className="saved-items-categories">

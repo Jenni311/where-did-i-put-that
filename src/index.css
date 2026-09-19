@@ -1129,7 +1129,7 @@ button:active {
 
 @keyframes reveal-section {
   from {
-    opacity: 0;
+    opacity: 0.2;
     transform: translateY(-4px) scale(0.995);
   }
 
