@@ -703,7 +703,20 @@ setTimeout(() => {
       }}
       aria-expanded={showLendingForm}
       aria-controls="lending-form"
-      onClick={() => setShowLendingForm((showing) => !showing)}
+      onClick={() => {
+        const opening = !showLendingForm
+      
+        setShowLendingForm(opening)
+      
+        if (opening) {
+          setTimeout(() => {
+            document.getElementById('lending-form')?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            })
+          }, 100)
+        }
+      }}
     >
       Want to lend something?
     </button>
