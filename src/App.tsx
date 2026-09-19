@@ -111,7 +111,11 @@ function App() {
       setPhoto(reader.result as string)
 
       setTimeout(() => {
-        document.getElementById('save-item-button')?.scrollIntoView({
+        const saveButton =
+          document.getElementById('save-edit-button') ||
+          document.getElementById('save-item-button')
+      
+        saveButton?.scrollIntoView({
           behavior: 'smooth',
           block: 'end',
         })
@@ -1205,12 +1209,13 @@ setTimeout(() => {
                             )}
 
                             <div className="edit-actions">
-                              <button
-                                className="save-edit-button"
-                                onClick={saveEditedItem}
-                              >
-                                Save changes
-                              </button>
+                            <button
+  id="save-edit-button"
+  className="save-edit-button"
+  onClick={saveEditedItem}
+>
+  Save changes
+</button>
 
                               <button
                                 className="cancel-edit-button"
