@@ -42,6 +42,7 @@ function App() {
     'alphabetical' | 'newest' | 'oldest'
   >('alphabetical')
   const [saveMessage, setSaveMessage] = useState('')
+  const [restoreMessage, setRestoreMessage] = useState('')
   const [isRememberFormClosing, setIsRememberFormClosing] = useState(false)
   
 
@@ -411,7 +412,11 @@ setTimeout(() => {
         return Array.from(merged.values())
       })
 
-      window.alert('Backup restored successfully.')
+      setRestoreMessage('Backup restored ✓')
+
+setTimeout(() => {
+  setRestoreMessage('')
+}, 3000)
 
       event.target.value = ''
     } catch (error) {
@@ -747,6 +752,11 @@ setTimeout(() => {
 {saveMessage && (
   <div className="save-message">
     {saveMessage}
+  </div>
+)}
+{restoreMessage && (
+  <div className="save-message">
+    {restoreMessage}
   </div>
 )}
     <button
