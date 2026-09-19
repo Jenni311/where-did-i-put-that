@@ -1064,6 +1064,9 @@ button:active {
   margin: 16px 0 4px;
   text-align: center;
 }
+.lending-options .more-button {
+  font-size: 1.1rem;
+}
 .saved-items-categories {
   display: flex;
   justify-content: center;
