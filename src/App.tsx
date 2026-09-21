@@ -16,6 +16,8 @@ function App() {
   const [showLendingForm, setShowLendingForm] = useState(false)
   const [lentItemName, setLentItemName] = useState('')
   const [lentTo, setLentTo] = useState('')
+  const [lentItemPhoto, setLentItemPhoto] = useState<string | null>(null)
+  const [lentToPhoto, setLentToPhoto] = useState<string | null>(null)
   const [editLentTo, setEditLentTo] = useState('')
   const [search, setSearch] = useState('')
   const [showAll, setShowAll] = useState(false)
@@ -98,6 +100,7 @@ function App() {
   function handlePhotoChange(
     event: React.ChangeEvent<HTMLInputElement>,
     setPhoto: (photo: string | null) => void,
+    scrollTargetId?: string,
   ) {
     const file = event.target.files?.[0]
 
@@ -111,6 +114,25 @@ function App() {
       setPhoto(reader.result as string)
 
       setTimeout(() => {
+        if (scrollTargetId) {
+          const target = document.getElementById(scrollTargetId)
+        
+          if (target) {
+            const targetBottom =
+              target.getBoundingClientRect().bottom + window.scrollY
+        
+            const scrollPosition =
+              targetBottom - window.innerHeight + 40
+        
+            window.scrollTo({
+              top: scrollPosition,
+              behavior: 'smooth',
+            })
+          }
+        
+          return
+        }
+      
         const saveButton =
           document.getElementById('save-edit-button') ||
           document.getElementById('save-item-button')
@@ -119,6 +141,7 @@ function App() {
           behavior: 'smooth',
           block: 'end',
         })
+      
         setTimeout(() => {
           window.scrollBy({
             top: 80,
@@ -303,10 +326,21 @@ function App() {
         Date.now(),
         ...currentItems.map((item) => item.id + 1),
       )
-      return [...currentItems, { id, name, location: '', lentTo: person }]
-    })
+      return [
+        ...currentItems,
+        {
+          id,
+          name,
+          location: '',
+          lentTo: person,
+          itemPhoto: lentItemPhoto,
+          lentToPhoto: lentToPhoto,
+        },
+      ]    })
     setLentItemName('')
     setLentTo('')
+    setLentItemPhoto(null)
+    setLentToPhoto(null)
 
     setSaveMessage('Lent item saved ✓')
 
@@ -751,6 +785,62 @@ setTimeout(() => {
           />
         </label>
 
+        <div className="photo-choice-buttons">
+            <label className="photo-button">
+    Add photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      onChange={(event) =>
+        handlePhotoChange(
+          event,
+          setLentItemPhoto,
+          'lent-item-photo-preview',
+        )
+      }
+    />
+  </label>
+
+  <label className="photo-button">
+    Take photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      onChange={(event) =>
+        handlePhotoChange(
+          event,
+          setLentItemPhoto,
+          'lent-item-photo-preview',
+        )
+      }
+    />
+  </label>
+</div>
+{lentItemPhoto && (
+  <div
+  id="lent-item-photo-preview"
+  className="photo-preview-wrapper"
+>
+    <img
+      className="photo-preview"
+      src={lentItemPhoto}
+      alt="Item preview"
+    />
+
+    <button
+      type="button"
+      className="remove-preview-photo"
+      onClick={() => setLentItemPhoto(null)}
+      aria-label="Remove item photo"
+    >
+      ×
+    </button>
+  </div>
+)}
+
         <label>
           Who did you lend it to?
           <input
@@ -761,7 +851,61 @@ setTimeout(() => {
             required
           />
         </label>
+        <div className="photo-choice-buttons">
+  <label className="photo-button">
+    Add photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      onChange={(event) =>
+        handlePhotoChange(
+          event,
+          setLentToPhoto,
+          'lent-person-photo-preview',
+        )
+      }
+    />
+  </label>
 
+  <label className="photo-button">
+    Take photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      onChange={(event) =>
+        handlePhotoChange(
+          event,
+          setLentToPhoto,
+          'lent-person-photo-preview',
+        )
+      }
+    />
+  </label>
+</div>
+{lentToPhoto && (
+  <div
+  id="lent-person-photo-preview"
+  className="photo-preview-wrapper"
+>
+    <img
+      className="photo-preview"
+      src={lentToPhoto}
+      alt="Person preview"
+    />
+
+    <button
+      type="button"
+      className="remove-preview-photo"
+      onClick={() => setLentToPhoto(null)}
+      aria-label="Remove person photo"
+    >
+      ×
+    </button>
+  </div>
+)}
         <button
           type="submit"
           disabled={!lentItemName.trim() || !lentTo.trim()}

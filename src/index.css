@@ -244,7 +244,12 @@ button:active {
   margin: 0;
   font-size: 1.1rem;
 }
-
+#lending-form .photo-choice-buttons {
+  margin-bottom: 20px;
+}
+#lending-form .photo-preview-wrapper {
+  margin-bottom: 32px;
+}
 
 /* ------------------------------
    SAVED ITEMS
