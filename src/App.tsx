@@ -121,8 +121,13 @@ function App() {
             const targetBottom =
               target.getBoundingClientRect().bottom + window.scrollY
         
+              const extraSpace =
+  scrollTargetId === 'lent-item-photo-preview' ? 110 :
+  scrollTargetId === 'lent-person-photo-preview' ? 140 :
+  40
+            
             const scrollPosition =
-              targetBottom - window.innerHeight + 40
+              targetBottom - window.innerHeight + extraSpace
         
             window.scrollTo({
               top: scrollPosition,
@@ -841,8 +846,8 @@ setTimeout(() => {
   </div>
 )}
 
-        <label>
-          Who did you lend it to?
+<label id="lent-to-section">
+  Who did you lend it to?
           <input
             type="text"
             placeholder="e.g. Laura"
