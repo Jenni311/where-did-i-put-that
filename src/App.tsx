@@ -122,7 +122,7 @@ function App() {
               target.getBoundingClientRect().bottom + window.scrollY
         
               const extraSpace =
-  scrollTargetId === 'lent-item-photo-preview' ? 110 :
+  scrollTargetId === 'lent-item-photo-preview' ? 210 :
   scrollTargetId === 'lent-person-photo-preview' ? 140 :
   40
             
