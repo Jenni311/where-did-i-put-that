@@ -318,30 +318,41 @@ function App() {
     }, 300)
   }
 
-  function saveLentItem() {
+  async function saveLentItem() {
     const name = lentItemName.trim()
     const person = lentTo.trim()
 
     if (!name || !person) {
       return
     }
+    const id = Date.now()
 
-    setItems((currentItems) => {
-      const id = Math.max(
-        Date.now(),
-        ...currentItems.map((item) => item.id + 1),
-      )
-      return [
-        ...currentItems,
-        {
-          id,
-          name,
-          location: '',
-          lentTo: person,
-          itemPhoto: lentItemPhoto,
-          lentToPhoto: lentToPhoto,
-        },
-      ]    })
+const lentItemPhotoKey = lentItemPhoto
+  ? `lent-item-photo-${id}`
+  : undefined
+
+const lentToPhotoKey = lentToPhoto
+  ? `lent-person-photo-${id}`
+  : undefined
+  if (lentItemPhotoKey && lentItemPhoto) {
+    await saveToDatabase(lentItemPhotoKey, lentItemPhoto)
+  }
+  
+  if (lentToPhotoKey && lentToPhoto) {
+    await saveToDatabase(lentToPhotoKey, lentToPhoto)
+  }
+
+  setItems((currentItems) => [
+    ...currentItems,
+    {
+      id,
+      name,
+      location: '',
+      lentTo: person,
+      itemPhotoKey: lentItemPhotoKey,
+      lentToPhotoKey: lentToPhotoKey,
+    },
+  ])
     setLentItemName('')
     setLentTo('')
     setLentItemPhoto(null)
