@@ -27,6 +27,7 @@ function App() {
   const [openLocationPhoto, setOpenLocationPhoto] = useState<string | null>(
     null,
   )
+  const [openLentToPhoto, setOpenLentToPhoto] = useState<string | null>(null)
   const [itemPhoto, setItemPhoto] = useState<string | null>(null)
   const [locationPhoto, setLocationPhoto] = useState<string | null>(null)
   const [itemThumbnails, setItemThumbnails] = useState<Record<number, string>>(
@@ -558,6 +559,7 @@ setTimeout(() => {
                       setOpenItemId(null)
                       setOpenItemPhoto(null)
                       setOpenLocationPhoto(null)
+                      setOpenLentToPhoto(null)
                       return
                     }
 
@@ -571,8 +573,14 @@ setTimeout(() => {
                       ? await getFromDatabase<string>(item.locationPhotoKey)
                       : null
 
+                      const savedLentToPhoto = item.lentToPhotoKey
+  ? await getFromDatabase<string>(item.lentToPhotoKey)
+  : null
+                      
+
                     setOpenItemPhoto(savedItemPhoto)
                     setOpenLocationPhoto(savedLocationPhoto)
+                    setOpenLentToPhoto(savedLentToPhoto)
                   }}
                 >
                   <strong>{item.name}</strong>
@@ -588,15 +596,16 @@ setTimeout(() => {
                       />
                     )}
 
-                    {item.lentTo ? (
-                      <p className="saved-item-location">
-                        Lent to {item.lentTo}
-                      </p>
-                    ) : (
-                      item.location && (
-                        <p className="saved-item-location">{item.location}</p>
-                      )
-                    )}
+{item.lentTo ? (
+  <div className="lent-to-details">
+    <p className="saved-detail-label">Lent to</p>
+    <p className="saved-item-location">{item.lentTo}</p>
+  </div>
+) : (
+  item.location && (
+    <p className="saved-item-location">{item.location}</p>
+  )
+)}
 
                     {!item.lentTo && openLocationPhoto && (
                       <img
@@ -1084,6 +1093,7 @@ setTimeout(() => {
                           setOpenItemId(null)
                           setOpenItemPhoto(null)
                           setOpenLocationPhoto(null)
+                          setOpenLentToPhoto(null)
                           return
                         }
 
@@ -1093,12 +1103,17 @@ setTimeout(() => {
                           ? await getFromDatabase<string>(item.itemPhotoKey)
                           : null
 
-                        const savedLocationPhoto = item.locationPhotoKey
+                          const savedLocationPhoto = item.locationPhotoKey
                           ? await getFromDatabase<string>(item.locationPhotoKey)
                           : null
-
+                        
+                        const savedLentToPhoto = item.lentToPhotoKey
+                          ? await getFromDatabase<string>(item.lentToPhotoKey)
+                          : null
+                        
                         setOpenItemPhoto(savedItemPhoto)
                         setOpenLocationPhoto(savedLocationPhoto)
+                        setOpenLentToPhoto(savedLentToPhoto)
 
                         setTimeout(() => {
                           document
@@ -1401,11 +1416,25 @@ setTimeout(() => {
                         )}
                         {editingItemId !== item.id && (
                           <>
-                            {item.lentTo ? (
-                              <p className="saved-item-location">
-                                Lent to {item.lentTo}
-                              </p>
-                            ) : (
+                           {item.lentTo ? (
+  <>
+    <p className="saved-detail-label">
+      Lent to
+    </p>
+
+    <p className="saved-item-location">
+      {item.lentTo}
+    </p>
+
+    {openLentToPhoto && (
+      <img
+        className="saved-item-photo"
+        src={openLentToPhoto}
+        alt="Person lent to"
+      />
+    )}
+  </>
+) : (
                               <>
                                 <p className="saved-detail-label">
                                   Where is it?
