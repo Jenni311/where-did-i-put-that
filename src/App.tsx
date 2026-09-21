@@ -932,11 +932,12 @@ setTimeout(() => {
   </div>
 )}
         <button
-          type="submit"
-          disabled={!lentItemName.trim() || !lentTo.trim()}
-        >
-          Save lent item
-        </button>
+  id="save-lent-item-button"
+  type="submit"
+  disabled={!lentItemName.trim() || !lentTo.trim()}
+>
+  Save lent item
+</button>
       </form>
     )}
   </div>

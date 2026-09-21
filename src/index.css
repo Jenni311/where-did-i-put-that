@@ -1159,7 +1159,8 @@ button:active {
     transform: translateY(-4px) scale(0.995);
   }
 }
-#save-item-button {
+#save-item-button,
+#save-lent-item-button {
   width: 78%;
   display: block;
   margin-left: auto;
