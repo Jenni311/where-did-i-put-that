@@ -40,6 +40,7 @@ function App() {
   const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(
     null,
   )
+  const [editLentToPhoto, setEditLentToPhoto] = useState<string | null>(null)
   const [showMoreOptions, setShowMoreOptions] = useState(false)
   const [sortMode, setSortMode] = useState<
     'alphabetical' | 'newest' | 'oldest'
@@ -200,69 +201,85 @@ function App() {
     if (editingItemId === null) {
       return
     }
-
+  
     const itemToEdit = items.find((item) => item.id === editingItemId)
-
+  
     if (!itemToEdit) {
       return
     }
-
+  
     if (itemToEdit.lentTo && (!editName.trim() || !editLentTo.trim())) {
       window.alert('Please enter the item name and who you lent it to.')
       return
     }
-
+  
     let itemPhotoKey = itemToEdit.itemPhotoKey
     let locationPhotoKey = itemToEdit.locationPhotoKey
-
+    let lentToPhotoKey = itemToEdit.lentToPhotoKey
+  
     if (editItemPhoto) {
       itemPhotoKey = itemPhotoKey || `item-photo-${editingItemId}`
-
+  
       await saveToDatabase(itemPhotoKey, editItemPhoto)
-
+  
       setItemThumbnails((previous) => ({
         ...previous,
         [editingItemId]: editItemPhoto,
       }))
     }
-
+  
     if (editLocationPhoto) {
-      locationPhotoKey = locationPhotoKey || `location-photo-${editingItemId}`
-
+      locationPhotoKey =
+        locationPhotoKey || `location-photo-${editingItemId}`
+  
       await saveToDatabase(locationPhotoKey, editLocationPhoto)
     }
-
+  
+    if (editLentToPhoto) {
+      lentToPhotoKey =
+        lentToPhotoKey || `lent-person-photo-${editingItemId}`
+  
+      await saveToDatabase(lentToPhotoKey, editLentToPhoto)
+    }
+  
     const updatedItems = items.map((item) =>
       item.id === editingItemId
         ? {
             ...item,
             name: editName,
             location: itemToEdit.lentTo ? item.location : editLocation,
-            ...(itemToEdit.lentTo ? { lentTo: editLentTo.trim() } : {}),
+            ...(itemToEdit.lentTo
+              ? { lentTo: editLentTo.trim() }
+              : {}),
             itemPhotoKey,
             locationPhotoKey,
+            lentToPhotoKey,
           }
         : item,
     )
-
+  
     setItems(updatedItems)
-
+  
     if (editItemPhoto) {
       setOpenItemPhoto(editItemPhoto)
     }
-
+  
     if (editLocationPhoto) {
       setOpenLocationPhoto(editLocationPhoto)
     }
-
+  
+    if (editLentToPhoto) {
+      setOpenLentToPhoto(editLentToPhoto)
+    }
+  
     setEditingItemId(null)
     setEditName('')
     setEditLocation('')
     setEditLentTo('')
     setEditItemPhoto(null)
     setEditLocationPhoto(null)
+    setEditLentToPhoto(null)
   }
-
   async function saveItem() {
     if (
       (!itemName.trim() && !itemPhoto) ||
@@ -560,6 +577,7 @@ setTimeout(() => {
                       setOpenItemPhoto(null)
                       setOpenLocationPhoto(null)
                       setOpenLentToPhoto(null)
+                      setEditingItemId(null)
                       return
                     }
 
@@ -623,25 +641,28 @@ setTimeout(() => {
           )}
         </div>
       )}
-      <button
-        className="remember-button"
-        onClick={() => {
-          const opening = !showRememberForm
+    <button
+  className="remember-button"
+  onClick={() => {
+    const opening = !showRememberForm
 
-          setShowRememberForm(opening)
+    setShowRememberForm(opening)
 
-          if (opening) {
-            setTimeout(() => {
-              document.getElementById('remember-form')?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-              })
-            }, 100)
-          }
-        }}
-      >
-        {showRememberForm ? 'Hide' : '+ Save a new item'}
-      </button>
+    if (opening) {
+      setShowAll(false)
+      setShowLendingForm(false)
+
+      setTimeout(() => {
+        document.getElementById('remember-form')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      }, 100)
+    }
+  }}
+>
+  {showRememberForm ? 'Hide' : '+ Save a new item'}
+</button>
 
       {showRememberForm && (
        <div
@@ -759,7 +780,7 @@ setTimeout(() => {
         </div>
       )}
 
-{showRememberForm && !saveMessage && (
+{!saveMessage && (
   <div className="lending-options">
     <button
       type="button"
@@ -778,6 +799,9 @@ setTimeout(() => {
         setShowLendingForm(opening)
       
         if (opening) {
+          setShowRememberForm(false)
+          setShowAll(false)
+      
           setTimeout(() => {
             document.getElementById('lending-form')?.scrollIntoView({
               behavior: 'smooth',
@@ -955,10 +979,15 @@ setTimeout(() => {
     <button
   className="view-all-button"
   onClick={() => {
-    const opening = !showAll
-    setShowAll(opening)
+  const opening = !showAll
+  setShowAll(opening)
 
-    if (!opening) {
+  if (opening) {
+    setShowRememberForm(false)
+    setShowLendingForm(false)
+  }
+
+  if (!opening) {
       setOpenItemId(null)
       setOpenItemPhoto(null)
       setOpenLocationPhoto(null)
@@ -1095,6 +1124,15 @@ setTimeout(() => {
                           setOpenItemPhoto(null)
                           setOpenLocationPhoto(null)
                           setOpenLentToPhoto(null)
+                        
+                          setEditingItemId(null)
+                          setEditName('')
+                          setEditLocation('')
+                          setEditLentTo('')
+                          setEditItemPhoto(null)
+                          setEditLocationPhoto(null)
+                          setEditLentToPhoto(null)
+                        
                           return
                         }
 
@@ -1278,18 +1316,98 @@ setTimeout(() => {
                             </div>
 
                             {item.lentTo ? (
-                              <label>
-                                Who did you lend it to?
-                                <input
-                                  type="text"
-                                  value={editLentTo}
-                                  onChange={(event) =>
-                                    setEditLentTo(event.target.value)
-                                  }
-                                  required
-                                />
-                              </label>
-                            ) : (
+  <>
+    <label>
+      Who did you lend it to?
+      <input
+        type="text"
+        value={editLentTo}
+        onChange={(event) =>
+          setEditLentTo(event.target.value)
+        }
+        required
+      />
+    </label>
+
+    <div className="photo-option">
+      {openLentToPhoto && !editLentToPhoto && (
+        <img
+          className="photo-preview"
+          src={openLentToPhoto}
+          alt="Current person"
+        />
+      )}
+
+      <div className="edit-photo-choice-buttons">
+        <label className="photo-button">
+          Choose photo
+          <input
+            className="photo-input"
+            type="file"
+            accept="image/*"
+            onChange={(event) =>
+              handlePhotoChange(event, setEditLentToPhoto)
+            }
+          />
+        </label>
+
+        <label className="photo-button">
+          Take photo
+          <input
+            className="photo-input"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={(event) =>
+              handlePhotoChange(event, setEditLentToPhoto)
+            }
+          />
+        </label>
+      </div>
+      {item.lentToPhotoKey && (
+  <button
+    type="button"
+    className="delete-photo-button"
+    onClick={async () => {
+      const confirmed = window.confirm(
+        'Are you sure you want to delete this photo?',
+      )
+
+      if (!confirmed) {
+        return
+      }
+
+      await deleteFromDatabase(item.lentToPhotoKey!)
+
+      setItems((previous) =>
+        previous.map((savedItem) =>
+          savedItem.id === item.id
+            ? {
+                ...savedItem,
+                lentToPhotoKey: undefined,
+              }
+            : savedItem,
+        ),
+      )
+
+      setOpenLentToPhoto(null)
+      setEditLentToPhoto(null)
+    }}
+  >
+    Delete photo
+  </button>
+)}
+
+      {editLentToPhoto && (
+        <img
+          className="photo-preview"
+          src={editLentToPhoto}
+          alt="New person preview"
+        />
+      )}
+    </div>
+  </>
+) : (
                               <>
                                 <label>
                                   Where did you put it?
@@ -1470,15 +1588,14 @@ setTimeout(() => {
                                 setEditLentTo(item.lentTo ?? '')
                                 setEditItemPhoto(null)
                                 setEditLocationPhoto(null)
+                                setEditLentToPhoto(null)
 
                                 setTimeout(() => {
                                   document
-                                    .getElementById(
-                                      `edit-photo-actions-${item.id}`,
-                                    )
+                                    .getElementById(`saved-item-${item.id}`)
                                     ?.scrollIntoView({
                                       behavior: 'smooth',
-                                      block: 'center',
+                                      block: 'start',
                                     })
                                 }, 150)
                               }}
@@ -1495,18 +1612,26 @@ setTimeout(() => {
                           </div>
                         )}
 
-                        <button
-                          type="button"
-                          className="collapse-item-button"
-                          onClick={() => {
-                            setOpenItemId(null)
-                            setOpenItemPhoto(null)
-                            setOpenLocationPhoto(null)
-                          }}
-                          aria-label="Close item"
-                        >
-                          <span>⌃</span>
-                        </button>
+<button
+  type="button"
+  className="collapse-item-button"
+  onClick={() => {
+    setOpenItemId(null)
+    setOpenItemPhoto(null)
+    setOpenLocationPhoto(null)
+    setOpenLentToPhoto(null)
+    setEditingItemId(null)
+    setEditName('')
+    setEditLocation('')
+    setEditLentTo('')
+    setEditItemPhoto(null)
+    setEditLocationPhoto(null)
+    setEditLentToPhoto(null)
+  }}
+  aria-label="Close item"
+>
+  <span>⌃</span>
+</button>
                       </div>
                     )}
                   </div>
