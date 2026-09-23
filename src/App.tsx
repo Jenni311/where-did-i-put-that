@@ -1659,10 +1659,10 @@ setTimeout(() => {
 
                                 setTimeout(() => {
                                   document
-                                    .getElementById(`saved-item-${item.id}`)
+                                    .getElementById(`edit-photo-actions-${item.id}`)
                                     ?.scrollIntoView({
                                       behavior: 'smooth',
-                                      block: 'start',
+                                      block: 'center',
                                     })
                                 }, 150)
                               }}
