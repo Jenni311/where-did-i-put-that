@@ -7,6 +7,7 @@ type StoredItem = {
   location: string
   lentTo?: string
   itemPhotoKey?: string
+  itemPhotoKeys?: string[]
   locationPhotoKey?: string
 }
 
@@ -24,6 +25,7 @@ function App() {
   const [showRememberForm, setShowRememberForm] = useState(false)
   const [openItemId, setOpenItemId] = useState<number | null>(null)
   const [openItemPhoto, setOpenItemPhoto] = useState<string | null>(null)
+  const [openItemPhotos, setOpenItemPhotos] = useState<string[]>([])
   const [openLocationPhoto, setOpenLocationPhoto] = useState<string | null>(
     null,
   )
@@ -37,6 +39,7 @@ function App() {
   const [editName, setEditName] = useState('')
   const [editLocation, setEditLocation] = useState('')
   const [editItemPhoto, setEditItemPhoto] = useState<string | null>(null)
+  const [editItemPhotos, setEditItemPhotos] = useState<string[]>([])
   const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(
     null,
   )
@@ -160,6 +163,26 @@ function App() {
 
     reader.readAsDataURL(file)
   }
+  function handleAdditionalItemPhoto(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0]
+  
+    if (!file) {
+      return
+    }
+  
+    const reader = new FileReader()
+  
+    reader.onload = () => {
+      setEditItemPhotos((currentPhotos) => [
+        ...currentPhotos,
+        reader.result as string,
+      ])
+    }
+  
+    reader.readAsDataURL(file)
+  }
 
   async function deleteItem(item: StoredItem) {
     const confirmed = window.confirm(
@@ -217,16 +240,30 @@ function App() {
     let locationPhotoKey = itemToEdit.locationPhotoKey
     let lentToPhotoKey = itemToEdit.lentToPhotoKey
   
-    if (editItemPhoto) {
-      itemPhotoKey = itemPhotoKey || `item-photo-${editingItemId}`
-  
-      await saveToDatabase(itemPhotoKey, editItemPhoto)
-  
-      setItemThumbnails((previous) => ({
-        ...previous,
-        [editingItemId]: editItemPhoto,
-      }))
-    }
+    let itemPhotoKeys = itemToEdit.itemPhotoKeys
+  ? [...itemToEdit.itemPhotoKeys]
+  : itemToEdit.itemPhotoKey
+    ? [itemToEdit.itemPhotoKey]
+    : []
+
+for (let index = 0; index < editItemPhotos.length; index++) {
+  const photo = editItemPhotos[index]
+  const photoKey = `item-photo-${editingItemId}-${Date.now()}-${index}`
+
+  await saveToDatabase(photoKey, photo)
+  itemPhotoKeys.push(photoKey)
+}
+
+if (!itemPhotoKey && itemPhotoKeys.length > 0) {
+  itemPhotoKey = itemPhotoKeys[0]
+}
+
+if (editItemPhotos.length > 0) {
+  setItemThumbnails((previous) => ({
+    ...previous,
+    [editingItemId]: editItemPhotos[0],
+  }))
+}
   
     if (editLocationPhoto) {
       locationPhotoKey =
@@ -251,17 +288,25 @@ function App() {
             ...(itemToEdit.lentTo
               ? { lentTo: editLentTo.trim() }
               : {}),
-            itemPhotoKey,
-            locationPhotoKey,
-            lentToPhotoKey,
+              itemPhotoKey,
+              itemPhotoKeys,
+              locationPhotoKey,
+              lentToPhotoKey,
           }
         : item,
     )
   
     setItems(updatedItems)
   
-    if (editItemPhoto) {
-      setOpenItemPhoto(editItemPhoto)
+    if (editItemPhotos.length > 0) {
+      setOpenItemPhotos((currentPhotos) => [
+        ...currentPhotos,
+        ...editItemPhotos,
+      ])
+    
+      if (!openItemPhoto) {
+        setOpenItemPhoto(editItemPhotos[0])
+      }
     }
   
     if (editLocationPhoto) {
@@ -277,8 +322,10 @@ function App() {
     setEditLocation('')
     setEditLentTo('')
     setEditItemPhoto(null)
+    setEditItemPhotos([])
     setEditLocationPhoto(null)
     setEditLentToPhoto(null)
+    
   }
   async function saveItem() {
     if (
@@ -314,6 +361,7 @@ function App() {
       name: itemName,
       location,
       itemPhotoKey,
+      itemPhotoKeys: itemPhotoKey ? [itemPhotoKey] : [],
       locationPhotoKey,
     }
 
@@ -1138,9 +1186,22 @@ setTimeout(() => {
 
                         setOpenItemId(item.id)
 
-                        const savedItemPhoto = item.itemPhotoKey
-                          ? await getFromDatabase<string>(item.itemPhotoKey)
-                          : null
+                        const itemPhotoKeys =
+                        item.itemPhotoKeys && item.itemPhotoKeys.length > 0
+                          ? item.itemPhotoKeys
+                          : item.itemPhotoKey
+                            ? [item.itemPhotoKey]
+                            : []
+                      
+                      const savedItemPhotos = (
+                        await Promise.all(
+                          itemPhotoKeys.map((photoKey) =>
+                            getFromDatabase<string>(photoKey),
+                          ),
+                        )
+                      ).filter((photo): photo is string => Boolean(photo))
+                      
+                      const savedItemPhoto = savedItemPhotos[0] ?? null
 
                           const savedLocationPhoto = item.locationPhotoKey
                           ? await getFromDatabase<string>(item.locationPhotoKey)
@@ -1151,6 +1212,7 @@ setTimeout(() => {
                           : null
                         
                         setOpenItemPhoto(savedItemPhoto)
+                        setOpenItemPhotos(savedItemPhotos)
                         setOpenLocationPhoto(savedLocationPhoto)
                         setOpenLentToPhoto(savedLentToPhoto)
 
@@ -1195,13 +1257,14 @@ setTimeout(() => {
                               <p className="saved-item-name">{item.name}</p>
                             )}
 
-                            {openItemPhoto && (
-                              <img
-                                className="saved-item-photo"
-                                src={openItemPhoto}
-                                alt="Saved item"
-                              />
-                            )}
+{openItemPhotos.map((photo, index) => (
+  <img
+    key={index}
+    className="saved-item-photo"
+    src={photo}
+    alt={`Saved item ${index + 1}`}
+  />
+))}
                           </>
                         )}
                         {editingItemId === item.id && (
@@ -1217,51 +1280,54 @@ setTimeout(() => {
                               />
                             </label>
 
-                            {openItemPhoto && !editItemPhoto && (
-                              <img
-                                className="photo-preview"
-                                src={openItemPhoto}
-                                alt="Current item"
-                              />
-                            )}
+                            {openItemPhotos.map((photo, index) => (
+  <img
+    key={index}
+    className="photo-preview"
+    src={photo}
+    alt={`Current item ${index + 1}`}
+  />
+))}
 
                             <div className="photo-option">
                               <div
                                 id={`edit-photo-actions-${item.id}`}
                                 className="photo-edit-actions"
                               >
-                                <div className="edit-photo-choice-buttons">
-                                  <label className="photo-button">
-                                    Choose photo
-                                    <input
-                                      className="photo-input"
-                                      type="file"
-                                      accept="image/*"
-                                      onChange={(event) =>
-                                        handlePhotoChange(
-                                          event,
-                                          setEditItemPhoto,
-                                        )
-                                      }
-                                    />
-                                  </label>
+                                {editItemPhotos.map((photo, index) => (
+  <img
+    key={index}
+    className="photo-preview"
+    src={photo}
+    alt={`New item preview ${index + 1}`}
+  />
+))}
+                               <div className="edit-photo-choice-buttons">
+  <label className="photo-button">
+    Choose photo
+    <input
+      className="photo-input" 
+      type="file"
+      accept="image/*"
+      onChange={(event) =>
+        handleAdditionalItemPhoto(event)
+      }
+    />
+  </label>
 
-                                  <label className="photo-button">
-                                    Take photo
-                                    <input
-                                      className="photo-input"
-                                      type="file"
-                                      accept="image/*"
-                                      capture="environment"
-                                      onChange={(event) =>
-                                        handlePhotoChange(
-                                          event,
-                                          setEditItemPhoto,
-                                        )
-                                      }
-                                    />
-                                  </label>
-                                </div>
+  <label className="photo-button">
+    Take photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      onChange={(event) =>
+        handleAdditionalItemPhoto(event)
+      }
+    />
+  </label>
+</div>
 
                                 {item.itemPhotoKey && (
                                   <button
@@ -1313,6 +1379,7 @@ setTimeout(() => {
                                   alt="New item preview"
                                 />
                               )}
+                             
                             </div>
 
                             {item.lentTo ? (
