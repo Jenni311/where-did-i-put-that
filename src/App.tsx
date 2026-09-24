@@ -9,6 +9,7 @@ type StoredItem = {
   itemPhotoKey?: string
   itemPhotoKeys?: string[]
   locationPhotoKey?: string
+  locationPhotoKeys?: string[]
 }
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
   const [openLocationPhoto, setOpenLocationPhoto] = useState<string | null>(
     null,
   )
+  const [openLocationPhotos, setOpenLocationPhotos] = useState<string[]>([])
   const [openLentToPhoto, setOpenLentToPhoto] = useState<string | null>(null)
   const [itemPhoto, setItemPhoto] = useState<string | null>(null)
   const [locationPhoto, setLocationPhoto] = useState<string | null>(null)
@@ -42,7 +44,9 @@ function App() {
   const [editItemPhotos, setEditItemPhotos] = useState<string[]>([])
   const [editLocationPhoto, setEditLocationPhoto] = useState<string | null>(
     null,
+    
   )
+  const [editLocationPhotos, setEditLocationPhotos] = useState<string[]>([])
   const [editLentToPhoto, setEditLentToPhoto] = useState<string | null>(null)
   const [showMoreOptions, setShowMoreOptions] = useState(false)
   const [sortMode, setSortMode] = useState<
@@ -183,6 +187,24 @@ function App() {
   
     reader.readAsDataURL(file)
   }
+  function handleAdditionalLocationPhoto(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0]
+  
+    if (!file) return
+  
+    const reader = new FileReader()
+  
+    reader.onload = () => {
+      setEditLocationPhotos((currentPhotos) => [
+        ...currentPhotos,
+        reader.result as string,
+      ])
+    }
+  
+    reader.readAsDataURL(file)
+  }
 
   async function deleteItem(item: StoredItem) {
     const confirmed = window.confirm(
@@ -265,12 +287,23 @@ if (editItemPhotos.length > 0) {
   }))
 }
   
-    if (editLocationPhoto) {
-      locationPhotoKey =
-        locationPhotoKey || `location-photo-${editingItemId}`
-  
-      await saveToDatabase(locationPhotoKey, editLocationPhoto)
-    }
+let locationPhotoKeys = itemToEdit.locationPhotoKeys
+? [...itemToEdit.locationPhotoKeys]
+: itemToEdit.locationPhotoKey
+  ? [itemToEdit.locationPhotoKey]
+  : []
+
+for (let index = 0; index < editLocationPhotos.length; index++) {
+const photo = editLocationPhotos[index]
+const photoKey = `location-photo-${editingItemId}-${Date.now()}-${index}`
+
+await saveToDatabase(photoKey, photo)
+locationPhotoKeys.push(photoKey)
+}
+
+if (!locationPhotoKey && locationPhotoKeys.length > 0) {
+locationPhotoKey = locationPhotoKeys[0]
+}
   
     if (editLentToPhoto) {
       lentToPhotoKey =
@@ -291,6 +324,7 @@ if (editItemPhotos.length > 0) {
               itemPhotoKey,
               itemPhotoKeys,
               locationPhotoKey,
+              locationPhotoKeys,
               lentToPhotoKey,
           }
         : item,
@@ -309,8 +343,15 @@ if (editItemPhotos.length > 0) {
       }
     }
   
-    if (editLocationPhoto) {
-      setOpenLocationPhoto(editLocationPhoto)
+    if (editLocationPhotos.length > 0) {
+      setOpenLocationPhotos((currentPhotos) => [
+        ...currentPhotos,
+        ...editLocationPhotos,
+      ])
+    
+      if (!openLocationPhoto) {
+        setOpenLocationPhoto(editLocationPhotos[0])
+      }
     }
   
     if (editLentToPhoto) {
@@ -363,6 +404,7 @@ if (editItemPhotos.length > 0) {
       itemPhotoKey,
       itemPhotoKeys: itemPhotoKey ? [itemPhotoKey] : [],
       locationPhotoKey,
+      locationPhotoKeys: locationPhotoKey ? [locationPhotoKey] : [],
     }
 
     setItems([...items, newItem])
@@ -635,18 +677,32 @@ setTimeout(() => {
                       ? await getFromDatabase<string>(item.itemPhotoKey)
                       : null
 
-                    const savedLocationPhoto = item.locationPhotoKey
-                      ? await getFromDatabase<string>(item.locationPhotoKey)
-                      : null
+                      const locationPhotoKeys =
+                      item.locationPhotoKeys && item.locationPhotoKeys.length > 0
+                        ? item.locationPhotoKeys
+                        : item.locationPhotoKey
+                          ? [item.locationPhotoKey]
+                          : []
+                    
+                    const savedLocationPhotos = (
+                      await Promise.all(
+                        locationPhotoKeys.map((photoKey) =>
+                          getFromDatabase<string>(photoKey),
+                        ),
+                      )
+                    ).filter((photo): photo is string => Boolean(photo))
+                    
+                    const savedLocationPhoto = savedLocationPhotos[0] ?? null
 
                       const savedLentToPhoto = item.lentToPhotoKey
   ? await getFromDatabase<string>(item.lentToPhotoKey)
   : null
                       
 
-                    setOpenItemPhoto(savedItemPhoto)
-                    setOpenLocationPhoto(savedLocationPhoto)
-                    setOpenLentToPhoto(savedLentToPhoto)
+  setOpenItemPhoto(savedItemPhoto)
+  setOpenLocationPhoto(savedLocationPhoto)
+  setOpenLocationPhotos(savedLocationPhotos)
+  setOpenLentToPhoto(savedLentToPhoto)
                   }}
                 >
                   <strong>{item.name}</strong>
@@ -718,110 +774,119 @@ setTimeout(() => {
        className={`remember-form${isRememberFormClosing ? ' closing' : ''}`}
      >
           <label>
-            What is it?
-            <input
-              type="text"
-              placeholder="e.g. Passport"
-              value={itemName}
-              onChange={(event) => setItemName(event.target.value)}
-            />
-          </label>
-          <div className="photo-option">
-            <div className="photo-choice-buttons">
-              <label className="photo-button">
-                Add photo
-                <input
-                  className="photo-input"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) => handlePhotoChange(event, setItemPhoto)}
-                />
-              </label>
+  What is it?
+  <input
+    type="text"
+    placeholder="e.g. Passport"
+    value={itemName}
+    onChange={(event) => setItemName(event.target.value)}
+  />
+</label>
 
-              <label className="photo-button">
-                Take photo
-                <input
-                  className="photo-input"
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  onChange={(event) => handlePhotoChange(event, setItemPhoto)}
-                />
-              </label>
-            </div>
+<div className="photo-option">
+  {itemPhoto && (
+    <div className="photo-preview-wrapper">
+      <img
+        className="photo-preview"
+        src={itemPhoto}
+        alt="Preview"
+      />
 
-            {itemPhoto && (
-              <div className="photo-preview-wrapper">
-                <img className="photo-preview" src={itemPhoto} alt="Preview" />
+      <button
+        type="button"
+        className="remove-preview-photo"
+        onClick={() => setItemPhoto(null)}
+        aria-label="Remove photo"
+      >
+        ×
+      </button>
+    </div>
+  )}
 
-                <button
-                  type="button"
-                  className="remove-preview-photo"
-                  onClick={() => setItemPhoto(null)}
-                  aria-label="Remove photo"
-                >
-                  ×
-                </button>
-              </div>
-            )}
-           
-          </div>
+  <div className="photo-choice-buttons">
+    <label className="photo-button">
+      Add photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        onChange={(event) =>
+          handlePhotoChange(event, setItemPhoto)
+        }
+      />
+    </label>
+
+    <label className="photo-button">
+      Take photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(event) =>
+          handlePhotoChange(event, setItemPhoto)
+        }
+      />
+    </label>
+  </div>
+</div>
           <label>
-            Where did you put it?
-            <input
-              type="text"
-              placeholder="e.g. Blue box in bedroom wardrobe"
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
-            />
-          </label>
-          <div className="photo-option">
-            <div className="photo-choice-buttons">
-              <label className="photo-button">
-                Add photo
-                <input
-                  className="photo-input"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) =>
-                    handlePhotoChange(event, setLocationPhoto)
-                  }
-                />
-              </label>
+  Where did you put it?
+  <input
+    type="text"
+    placeholder="e.g. Blue box in bedroom wardrobe"
+    value={location}
+    onChange={(event) => setLocation(event.target.value)}
+  />
+</label>
 
-              <label className="photo-button">
-                Take photo
-                <input
-                  className="photo-input"
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  onChange={(event) =>
-                    handlePhotoChange(event, setLocationPhoto)
-                  }
-                />
-              </label>
-            </div>
+<div className="photo-option">
+  {locationPhoto && (
+    <div className="photo-preview-wrapper">
+      <img
+        className="photo-preview"
+        src={locationPhoto}
+        alt="Preview"
+      />
 
-            {locationPhoto && (
-              <div className="photo-preview-wrapper">
-                <img
-                  className="photo-preview"
-                  src={locationPhoto}
-                  alt="Preview"
-                />
+      <button
+        type="button"
+        className="remove-preview-photo"
+        onClick={() => setLocationPhoto(null)}
+        aria-label="Remove photo"
+      >
+        ×
+      </button>
+    </div>
+  )}
 
-                <button
-                  type="button"
-                  className="remove-preview-photo"
-                  onClick={() => setLocationPhoto(null)}
-                  aria-label="Remove photo"
-                >
-                  ×
-                </button>
-              </div>
-            )}
-          </div>
+  <div className="photo-choice-buttons">
+    <label className="photo-button">
+      Add photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        onChange={(event) =>
+          handlePhotoChange(event, setLocationPhoto)
+        }
+      />
+    </label>
+
+    <label className="photo-button">
+      Take photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(event) =>
+          handlePhotoChange(event, setLocationPhoto)
+        }
+      />
+    </label>
+  </div>
+</div>
           <button id="save-item-button" onClick={saveItem}>
             Save item
           </button>{' '}
@@ -872,55 +937,21 @@ setTimeout(() => {
         }}
       >
         <label>
-          What is it?
-          <input
-            type="text"
-            placeholder="e.g. The Hobbit"
-            value={lentItemName}
-            onChange={(event) => setLentItemName(event.target.value)}
-            required
-          />
-        </label>
+  What is it?
+  <input
+    type="text"
+    placeholder="e.g. The Hobbit"
+    value={lentItemName}
+    onChange={(event) => setLentItemName(event.target.value)}
+    required
+  />
+</label>
 
-        <div className="photo-choice-buttons">
-            <label className="photo-button">
-    Add photo
-    <input
-      className="photo-input"
-      type="file"
-      accept="image/*"
-      onChange={(event) =>
-        handlePhotoChange(
-          event,
-          setLentItemPhoto,
-          'lent-item-photo-preview',
-        )
-      }
-    />
-  </label>
-
-  <label className="photo-button">
-    Take photo
-    <input
-      className="photo-input"
-      type="file"
-      accept="image/*"
-      capture="environment"
-      onChange={(event) =>
-        handlePhotoChange(
-          event,
-          setLentItemPhoto,
-          'lent-item-photo-preview',
-        )
-      }
-    />
-  </label>
-</div>
 {lentItemPhoto && (
   <div
-  id="lent-item-photo-preview"
-  className="photo-preview-wrapper"
->
+    id="lent-item-photo-preview"
+    className="photo-preview-wrapper"
+  >
     <img
       className="photo-preview"
       src={lentItemPhoto}
@@ -938,17 +969,75 @@ setTimeout(() => {
   </div>
 )}
 
+<div className="photo-choice-buttons">
+  <label className="photo-button">
+    Add photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      onChange={(event) =>
+        handlePhotoChange(
+          event,
+          setLentItemPhoto,
+          'lent-item-photo-preview',
+        )
+      }
+    />
+  </label>
+
+  <label className="photo-button">
+    Take photo
+    <input
+      className="photo-input"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      onChange={(event) =>
+        handlePhotoChange(
+          event,
+          setLentItemPhoto,
+          'lent-item-photo-preview',
+        )
+      }
+    />
+  </label>
+</div>
+
 <label id="lent-to-section">
   Who did you lend it to?
-          <input
-            type="text"
-            placeholder="e.g. Laura"
-            value={lentTo}
-            onChange={(event) => setLentTo(event.target.value)}
-            required
-          />
-        </label>
-        <div className="photo-choice-buttons">
+  <input
+    type="text"
+    placeholder="e.g. Laura"
+    value={lentTo}
+    onChange={(event) => setLentTo(event.target.value)}
+    required
+  />
+</label>
+
+{lentToPhoto && (
+  <div
+    id="lent-person-photo-preview"
+    className="photo-preview-wrapper"
+  >
+    <img
+      className="photo-preview"
+      src={lentToPhoto}
+      alt="Person preview"
+    />
+
+    <button
+      type="button"
+      className="remove-preview-photo"
+      onClick={() => setLentToPhoto(null)}
+      aria-label="Remove person photo"
+    >
+      ×
+    </button>
+  </div>
+)}
+
+<div className="photo-choice-buttons">
   <label className="photo-button">
     Add photo
     <input
@@ -982,27 +1071,6 @@ setTimeout(() => {
     />
   </label>
 </div>
-{lentToPhoto && (
-  <div
-  id="lent-person-photo-preview"
-  className="photo-preview-wrapper"
->
-    <img
-      className="photo-preview"
-      src={lentToPhoto}
-      alt="Person preview"
-    />
-
-    <button
-      type="button"
-      className="remove-preview-photo"
-      onClick={() => setLentToPhoto(null)}
-      aria-label="Remove person photo"
-    >
-      ×
-    </button>
-  </div>
-)}
         <button
   id="save-lent-item-button"
   type="submit"
@@ -1203,9 +1271,22 @@ setTimeout(() => {
                       
                       const savedItemPhoto = savedItemPhotos[0] ?? null
 
-                          const savedLocationPhoto = item.locationPhotoKey
-                          ? await getFromDatabase<string>(item.locationPhotoKey)
-                          : null
+                      const locationPhotoKeys =
+                      item.locationPhotoKeys && item.locationPhotoKeys.length > 0
+                        ? item.locationPhotoKeys
+                        : item.locationPhotoKey
+                          ? [item.locationPhotoKey]
+                          : []
+                    
+                    const savedLocationPhotos = (
+                      await Promise.all(
+                        locationPhotoKeys.map((photoKey) =>
+                          getFromDatabase<string>(photoKey),
+                        ),
+                      )
+                    ).filter((photo): photo is string => Boolean(photo))
+                    
+                    const savedLocationPhoto = savedLocationPhotos[0] ?? null
                         
                         const savedLentToPhoto = item.lentToPhotoKey
                           ? await getFromDatabase<string>(item.lentToPhotoKey)
@@ -1214,6 +1295,7 @@ setTimeout(() => {
                         setOpenItemPhoto(savedItemPhoto)
                         setOpenItemPhotos(savedItemPhotos)
                         setOpenLocationPhoto(savedLocationPhoto)
+                        setOpenLocationPhotos(savedLocationPhotos)
                         setOpenLentToPhoto(savedLentToPhoto)
 
                         setTimeout(() => {
@@ -1487,91 +1569,92 @@ setTimeout(() => {
                                   />
                                 </label>
 
-                                {openLocationPhoto && !editLocationPhoto && (
-                                  <img
-                                    className="photo-preview"
-                                    src={openLocationPhoto}
-                                    alt="Current location"
-                                  />
-                                )}
-
                                 <div className="photo-option">
-                                  <div className="edit-photo-choice-buttons">
-                                    <label className="photo-button">
-                                      Choose photo
-                                      <input
-                                        className="photo-input"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(event) =>
-                                          handlePhotoChange(
-                                            event,
-                                            setEditLocationPhoto,
-                                          )
-                                        }
-                                      />
-                                    </label>
+  {openLocationPhoto && !editLocationPhoto && (
+    <img
+      className="photo-preview"
+      src={openLocationPhoto}
+      alt="Current location"
+    />
+  )}
 
-                                    <label className="photo-button">
-                                      Take photo
-                                      <input
-                                        className="photo-input"
-                                        type="file"
-                                        accept="image/*"
-                                        capture="environment"
-                                        onChange={(event) =>
-                                          handlePhotoChange(
-                                            event,
-                                            setEditLocationPhoto,
-                                          )
-                                        }
-                                      />
-                                    </label>
-                                  </div>
+  {editLocationPhoto && (
+    <img
+      className="photo-preview"
+      src={editLocationPhoto}
+      alt="New location preview"
+    />
+  )}
 
-                                  {item.locationPhotoKey && (
-                                    <button
-                                      className="delete-photo-button"
-                                      onClick={async () => {
-                                        const confirmed = window.confirm(
-                                          'Are you sure you want to delete this photo?',
-                                        )
+  {editLocationPhotos.map((photo, index) => (
+    <img
+      key={index}
+      className="photo-preview"
+      src={photo}
+      alt={`New location preview ${index + 1}`}
+    />
+  ))}
 
-                                        if (!confirmed) {
-                                          return
-                                        }
+  <div className="edit-photo-choice-buttons">
+    <label className="photo-button">
+      Choose photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        onChange={(event) =>
+          handleAdditionalLocationPhoto(event)
+        }
+      />
+    </label>
 
-                                        await deleteFromDatabase(
-                                          item.locationPhotoKey!,
-                                        )
+    <label className="photo-button">
+      Take photo
+      <input
+        className="photo-input"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(event) =>
+          handleAdditionalLocationPhoto(event)
+        }
+      />
+    </label>
+  </div>
 
-                                        setItems((previous) =>
-                                          previous.map((savedItem) =>
-                                            savedItem.id === item.id
-                                              ? {
-                                                  ...savedItem,
-                                                  locationPhotoKey: undefined,
-                                                }
-                                              : savedItem,
-                                          ),
-                                        )
+  {item.locationPhotoKey && (
+    <button
+      className="delete-photo-button"
+      onClick={async () => {
+        const confirmed = window.confirm(
+          'Are you sure you want to delete this photo?',
+        )
 
-                                        setOpenLocationPhoto(null)
-                                        setEditLocationPhoto(null)
-                                      }}
-                                    >
-                                      Delete photo
-                                    </button>
-                                  )}
+        if (!confirmed) {
+          return
+        }
 
-                                  {editLocationPhoto && (
-                                    <img
-                                      className="photo-preview"
-                                      src={editLocationPhoto}
-                                      alt="New location preview"
-                                    />
-                                  )}
-                                </div>
+        await deleteFromDatabase(item.locationPhotoKey!)
+
+        setItems((previous) =>
+          previous.map((savedItem) =>
+            savedItem.id === item.id
+              ? {
+                  ...savedItem,
+                  locationPhotoKey: undefined,
+                }
+              : savedItem,
+          ),
+        )
+
+        setOpenLocationPhoto(null)
+        setEditLocationPhoto(null)
+      }}
+    >
+      Delete photo
+    </button>
+  )}
+</div>
                               </>
                             )}
 
@@ -1632,13 +1715,14 @@ setTimeout(() => {
                                   </p>
                                 )}
 
-                                {openLocationPhoto && (
-                                  <img
-                                    className="saved-item-photo"
-                                    src={openLocationPhoto}
-                                    alt="Saved location"
-                                  />
-                                )}
+{openLocationPhotos.map((photo, index) => (
+  <img
+    key={index}
+    className="saved-item-photo"
+    src={photo}
+    alt={`Saved location ${index + 1}`}
+  />
+))}
                               </>
                             )}
                           </>
@@ -1654,7 +1738,9 @@ setTimeout(() => {
                                 setEditLocation(item.location)
                                 setEditLentTo(item.lentTo ?? '')
                                 setEditItemPhoto(null)
+                                setEditItemPhotos([])
                                 setEditLocationPhoto(null)
+                                setEditLocationPhotos([])
                                 setEditLentToPhoto(null)
 
                                 setTimeout(() => {

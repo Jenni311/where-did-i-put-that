@@ -200,6 +200,7 @@ button:active {
 
 .photo-preview-wrapper {
   position: relative;
+  margin-bottom: 20px;
 }
 
 .remove-preview-photo {
@@ -246,9 +247,6 @@ button:active {
 }
 #lending-form .photo-choice-buttons {
   margin-bottom: 20px;
-}
-#lending-form .photo-preview-wrapper {
-  margin-bottom: 32px;
 }
 
 /* ------------------------------
@@ -512,7 +510,7 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 0px;
 }
 
 .photo-edit-actions .photo-button,
