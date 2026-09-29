@@ -1164,3 +1164,21 @@ button:active {
   margin-left: auto;
   margin-right: auto;
 }
+/* Keep each gallery and its controls together inside its form section. */
+.photo-section {
+  border: 0;
+  padding: 0;
+  margin: 0 0 20px;
+  min-width: 0;
+}
+.photo-section:disabled .photo-button { opacity: 0.6; cursor: wait; }
+.missing-photo { padding: 36px 12px; }
+.edit-form { scroll-margin-top: 16px; }
+#save-edit-button, #save-item-button, #save-lent-item-button { scroll-margin-bottom: 40px; }
+
+#remember-form {
+  margin-top: 12px;
+  padding: 20px 16px;
+  border-radius: 16px;
+  background: #fffdf9;
+}
