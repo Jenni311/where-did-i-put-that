@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase, productionUrl } from './supabase'
 import { Repository, errorMessage } from './repository'
@@ -9,6 +10,8 @@ export default function AccountApp() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [working, setWorking] = useState(false)
+  const [email, setEmail] = useState('')
+  const [emailSent, setEmailSent] = useState(false)
   useEffect(() => {
     let active = true
     let authEvent = false
@@ -47,14 +50,40 @@ export default function AccountApp() {
     } catch (error) { setError(errorMessage(error)) }
     finally { setWorking(false) }
   }
+  async function signInWithEmail(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const address = email.trim()
+    if (!address) return
+    if (!window.confirm('Send a one-time sign-in link to this email address?')) return
+    setWorking(true); setError(''); setEmailSent(false)
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: address,
+        options: { emailRedirectTo: productionUrl },
+      })
+      if (error) throw error
+      setEmailSent(true)
+    } catch (error) { setError(errorMessage(error)) }
+    finally { setWorking(false) }
+  }
   if (loading) return <main><p role="status">Opening your app…</p></main>
   const published = window.location.origin === new URL(productionUrl).origin
   return <App key={accountId ?? 'local'} repository={repository} accountControls={busy => <>
     {session ? <div className="account-heading">
       <p>Signed in as <strong>{session.user.email ?? 'Google user'}</strong></p>
       <button disabled={busy || working} onClick={signOut}>Sign out</button>
-    </div> : published ?
-      <button disabled={busy || working} onClick={signIn}>{working ? 'Opening Google…' : 'Sign in with Google'}</button> :
+    </div> : published ? <div className="sign-in-options">
+      <button disabled={busy || working} onClick={signIn}>{working ? 'Opening Google…' : 'Sign in with Google'}</button>
+      <span>or</span>
+      <form className="email-sign-in" onSubmit={signInWithEmail}>
+        <label htmlFor="sign-in-email">Sign in with email</label>
+        <div className="email-sign-in-row">
+          <input id="sign-in-email" type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="you@example.com" required disabled={busy || working} />
+          <button type="submit" disabled={busy || working}>{working ? 'Sending…' : 'Email me a link'}</button>
+        </div>
+        {emailSent && <p className="email-sent" role="status">Check your email for the sign-in link.</p>}
+      </form>
+    </div> :
       <p>To sign in, open the <a href={productionUrl} target="_blank" rel="noreferrer">published app</a>. Preview items stay in this preview browser.</p>}
     {error && <p role="alert">{error}</p>}
   </>} />
