@@ -1205,7 +1205,7 @@ button:active {
 .sign-in-options { display: grid; gap: 8px; }
 .sign-in-options > span { text-align: center; color: #777; font-size: .8rem; }
 .email-sign-in { display: grid; gap: 6px; }
-.email-sign-in label { margin-bottom: 0; font-size: 1.1rem; font-weight: 700; }
+.email-sign-in label { margin-bottom: 0; font-size: 0.9rem; font-weight: 700; }
 .email-sign-in-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .email-sign-in input { flex: 1 1 220px; min-width: 0; margin-top: 0; padding: 10px 12px; border: 1px solid #c7c9c7; border-radius: 8px; font: inherit; }
 .email-sign-in button { flex: 0 0 auto; background: #505050; color: #fff; border-color: #505050; }
