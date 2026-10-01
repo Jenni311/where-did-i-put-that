@@ -1,23 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { PhotoSection } from './PhotoSection'
-import { loadPhotos, photoKeys, storePhotos } from './photos'
+import { photoKeys } from './photos'
+import { Repository, readLocalItems, itemTime, importItem, errorMessage } from './repository'
+import type { StoredItem } from './repository'
 import type { Photo } from './photos'
 import { deleteFromDatabase, getFromDatabase, updateDatabase } from './db'
 import blackCatHero2 from './assets/black-cat-hero-2.png'
-type StoredItem = {
-  id: number
-  name: string
-  location: string
-  lentTo?: string
-  lentToPhotoKey?: string
-  lentToPhotoKeys?: string[]
-  itemPhotoKey?: string
-  itemPhotoKeys?: string[]
-  locationPhotoKey?: string
-  locationPhotoKeys?: string[]
-}
+function App({ repository, accountControls }: { repository: Repository; accountControls: (busy: boolean) => React.ReactNode }) {
+  const storePhotos = (photos: Photo[]) => repository.stage(photos)
+  const loadPhotos = (keys: string[]) => Promise.all(keys.map(async id => ({ id, src: await repository.readPhoto(id) })))
+  const [ready, setReady] = useState(!repository.userId)
+  const [accountError, setAccountError] = useState('')
+  const [cleanupPending, setCleanupPending] = useState(false)
+  const newItemId = useRef<string | number | null>(null)
+  const newLentId = useRef<string | number | null>(null)
+  async function cleanFiles() { setCleanupPending(!(await repository.cleanup())) }
 
-function App() {
   const [itemName, setItemName] = useState('')
   const [location, setLocation] = useState('')
   const [showLendingForm, setShowLendingForm] = useState(false)
@@ -29,7 +27,7 @@ function App() {
   const [search, setSearch] = useState('')
   const [showAll, setShowAll] = useState(false)
   const [showRememberForm, setShowRememberForm] = useState(false)
-  const [openItemId, setOpenItemId] = useState<number | null>(null)
+  const [openItemId, setOpenItemId] = useState<number | string | null>(null)
   const [openItemPhotos, setOpenItemPhotos] = useState<Photo[]>([])
   const [openLocationPhotos, setOpenLocationPhotos] = useState<Photo[]>([])
   const [openLentToPhotos, setOpenLentToPhotos] = useState<Photo[]>([])
@@ -45,10 +43,10 @@ function App() {
     photoBusyRef.current += busy ? 1 : -1
     setPendingPhotoOperations(photoBusyRef.current)
   }, [])
-  const [itemThumbnails, setItemThumbnails] = useState<Record<number, string>>(
+  const [itemThumbnails, setItemThumbnails] = useState<Record<string, string>>(
     {},
   )
-  const [editingItemId, setEditingItemId] = useState<number | null>(null)
+  const [editingItemId, setEditingItemId] = useState<number | string | null>(null)
   const [editName, setEditName] = useState('')
   const [editLocation, setEditLocation] = useState('')
   const [editItemPhotos, setEditItemPhotos] = useState<Photo[]>([])
@@ -66,30 +64,70 @@ function App() {
     'all' | 'put-away' | 'lent-out'
   >('all')
 
-  const [items, setItems] = useState<StoredItem[]>(() => {
-    const savedItems = localStorage.getItem('storedItems')
-
-    if (savedItems) {
-      return JSON.parse(savedItems)
-    }
-
-    return []
-  })
+  const [items, setItems] = useState<StoredItem[]>(() => repository.userId ? [] : readLocalItems())
 
   useEffect(() => {
-    localStorage.setItem('storedItems', JSON.stringify(items))
-  }, [items])
+    if (!repository.userId) localStorage.setItem('storedItems', JSON.stringify(items))
+  }, [items, repository])
+
+  useEffect(() => {
+    let cancelled = false
+    repository.activate()
+    if (repository.userId) {
+      repository.load().then(data => {
+        if (!cancelled) { setItems(data); setReady(true); void repository.cleanup().then(ok => { if (!cancelled) setCleanupPending(!ok) }) }
+      }).catch(error => { if (!cancelled) setAccountError(errorMessage(error)) })
+    }
+    return () => { cancelled = true; repository.dispose() }
+  }, [repository])
+
+  async function refreshAccount() {
+    if (savingRef.current || photoBusyRef.current) return
+    if ((editingItemId !== null || showRememberForm || showLendingForm) &&
+        !window.confirm('Refresh account items? Open forms and unsaved drafts will be closed.')) return
+    setAccountError('')
+    setSaving(true)
+    savingRef.current = true
+    try {
+      const fresh = await repository.load()
+      setItems(fresh)
+      setReady(true)
+      openRequest.current++
+      setOpenItemId(null)
+      resetEdit()
+      setShowRememberForm(false)
+      setShowLendingForm(false)
+      setItemName(''); setLocation(''); setItemPhotos([]); setLocationPhotos([])
+      setLentItemName(''); setLentTo(''); setLentItemPhotos([]); setLentToPhotos([])
+      newItemId.current = null; newLentId.current = null
+      await cleanFiles()
+    } catch (error) { setAccountError(errorMessage(error)) }
+    finally { savingRef.current = false; setSaving(false) }
+  }
+
+  async function copyLocalItems() {
+    if (savingRef.current || photoBusyRef.current) return
+    if (!window.confirm('Copy this browser’s saved items and photos into this account? The local originals will be kept. Identical previously copied items will be skipped.')) return
+    savingRef.current = true; setSaving(true); setAccountError('')
+    try {
+      for (const item of readLocalItems())
+        await importItem(repository, item, key => getFromDatabase<string>(key))
+      setItems(await repository.load())
+      setSaveMessage('Local items copied to your account ✓')
+    } catch (error) { setAccountError(errorMessage(error) + ' You can retry; completed copies will be skipped.') }
+    finally { savingRef.current = false; setSaving(false) }
+  }
 
   useEffect(() => {
     let cancelled = false
 
     async function loadThumbnails() {
-      const thumbnails: Record<number, string> = {}
+      const thumbnails: Record<string, string> = {}
 
       for (const item of items) {
         const primaryKey = photoKeys(item, 'item')[0]
         if (primaryKey) {
-          const photo = await getFromDatabase<string>(primaryKey)
+          const photo = await repository.readPhoto(primaryKey)
 
           if (photo) {
             thumbnails[item.id] = photo
@@ -102,12 +140,12 @@ function App() {
       }
     }
 
-    loadThumbnails()
+    loadThumbnails().catch(() => { /* Individual photo loads show actionable errors when opened. */ })
 
     return () => {
       cancelled = true
     }
-  }, [items])
+  }, [items, repository])
 
   function resetEdit() {
     setEditingItemId(null)
@@ -179,21 +217,14 @@ function App() {
       )
     )
       return
+    if (savingRef.current) return
+    savingRef.current = true; setSaving(true)
     try {
-      await deleteFromDatabase(photo.id)
-      setItems((previous) =>
-        previous.map((saved) => {
-          if (saved.id !== item.id) return saved
-          const remaining = photoKeys(saved, kind).filter(
-            (key) => key !== photo.id,
-          )
-          return {
-            ...saved,
-            [`${kind}PhotoKeys`]: remaining,
-            [`${kind}PhotoKey`]: remaining[0],
-          }
-        }),
-      )
+      const remaining = photoKeys(item, kind).filter(key => key !== photo.id)
+      const updated = await repository.save({ ...item, [`${kind}PhotoKeys`]: remaining, [`${kind}PhotoKey`]: remaining[0] })
+      if (!repository.userId) await deleteFromDatabase(photo.id)
+      setItems(previous => previous.map(saved => saved.id === item.id ? updated : saved))
+      await cleanFiles()
       const setPhotos =
         kind === 'item'
           ? setOpenItemPhotos
@@ -201,9 +232,9 @@ function App() {
             ? setOpenLocationPhotos
             : setOpenLentToPhotos
       setPhotos((previous) => previous.filter((saved) => saved.id !== photo.id))
-    } catch {
-      window.alert('The photo could not be deleted. Please try again.')
-    }
+    } catch (error) {
+      window.alert(errorMessage(error))
+    } finally { savingRef.current = false; setSaving(false) }
   }
 
   async function deleteItem(item: StoredItem) {
@@ -213,18 +244,15 @@ function App() {
       )
     )
       return
+    if (savingRef.current || photoBusyRef.current) return
+    savingRef.current = true; setSaving(true)
     try {
-      const keys = [
-        ...photoKeys(item, 'item'),
-        ...photoKeys(item, 'location'),
-        ...photoKeys(item, 'lentTo'),
-      ]
-      await updateDatabase([], keys)
-      setItems((previous) => previous.filter((saved) => saved.id !== item.id))
-      if (openItemId === item.id) closeItem()
-    } catch {
-      window.alert('The item could not be deleted. Please try again.')
-    }
+      await repository.remove(item)
+      setItems(previous => previous.filter(saved => saved.id !== item.id))
+      if (openItemId === item.id) { openRequest.current++; setOpenItemId(null); resetEdit() }
+      await cleanFiles()
+    } catch (error) { window.alert(errorMessage(error)) }
+    finally { savingRef.current = false; setSaving(false) }
   }
 
   async function saveEditedItem() {
@@ -249,32 +277,24 @@ function App() {
         ...photoKeys(itemToEdit, 'lentTo'),
         ...(await storePhotos(editLentToPhotos)),
       ]
-      setItems((previous) =>
-        previous.map((item) =>
-          item.id === itemToEdit.id
-            ? {
-                ...item,
-                name: editName,
-                location: itemToEdit.lentTo ? item.location : editLocation,
-                ...(itemToEdit.lentTo ? { lentTo: editLentTo.trim() } : {}),
-                itemPhotoKey: itemPhotoKeys[0],
-                itemPhotoKeys,
-                locationPhotoKey: locationPhotoKeys[0],
-                locationPhotoKeys,
-                lentToPhotoKey: lentToPhotoKeys[0],
-                lentToPhotoKeys,
-              }
-            : item,
-        ),
-      )
-      setOpenItemPhotos((previous) => [...previous, ...editItemPhotos])
-      setOpenLocationPhotos((previous) => [...previous, ...editLocationPhotos])
-      setOpenLentToPhotos((previous) => [...previous, ...editLentToPhotos])
+      const previews = await Promise.all([
+        loadPhotos(itemPhotoKeys), loadPhotos(locationPhotoKeys), loadPhotos(lentToPhotoKeys),
+      ])
+      const updated = await repository.save({
+        ...itemToEdit, name: editName,
+        location: itemToEdit.lentTo ? itemToEdit.location : editLocation,
+        ...(itemToEdit.lentTo ? { lentTo: editLentTo.trim() } : {}),
+        itemPhotoKey: itemPhotoKeys[0], itemPhotoKeys,
+        locationPhotoKey: locationPhotoKeys[0], locationPhotoKeys,
+        lentToPhotoKey: lentToPhotoKeys[0], lentToPhotoKeys,
+      })
+      setItems(previous => previous.map(item => item.id === updated.id ? updated : item))
+      setOpenItemPhotos(previews[0])
+      setOpenLocationPhotos(previews[1])
+      setOpenLentToPhotos(previews[2])
       resetEdit()
-    } catch {
-      window.alert(
-        'Changes could not be saved. Your new photos are still here; please try again.',
-      )
+    } catch (error) {
+      window.alert(errorMessage(error) + ' Your draft is still here.')
     } finally {
       savingRef.current = false
       setSaving(false)
@@ -295,7 +315,7 @@ function App() {
       const itemPhotoKeys = await storePhotos(itemPhotos)
       const locationPhotoKeys = await storePhotos(locationPhotos)
       const newItem: StoredItem = {
-        id: Date.now(),
+        id: newItemId.current ??= repository.newId(),
         name: itemName,
         location,
         itemPhotoKey: itemPhotoKeys[0],
@@ -303,7 +323,9 @@ function App() {
         locationPhotoKey: locationPhotoKeys[0],
         locationPhotoKeys,
       }
-      setItems((previous) => [...previous, newItem])
+      const committed = await repository.save(newItem)
+      setItems((previous) => [...previous.filter(i => i.id !== committed.id), committed])
+      newItemId.current = null
       setItemName('')
       setLocation('')
       setItemPhotos([])
@@ -315,10 +337,8 @@ function App() {
         setSaveMessage('Saved ✓')
         setTimeout(() => setSaveMessage(''), 3000)
       }, 300)
-    } catch {
-      window.alert(
-        'The item could not be saved. Your photos are still here; please try again.',
-      )
+    } catch (error) {
+      window.alert(errorMessage(error) + ' Your draft is still here.')
     } finally {
       savingRef.current = false
       setSaving(false)
@@ -332,12 +352,10 @@ function App() {
     savingRef.current = true
     setSaving(true)
     try {
-      const id = Date.now()
+      const id = newLentId.current ??= repository.newId()
       const itemPhotoKeys = await storePhotos(lentItemPhotos)
       const lentToPhotoKeys = await storePhotos(lentToPhotos)
-      setItems((previous) => [
-        ...previous,
-        {
+      const committed = await repository.save({
           id,
           name,
           location: '',
@@ -346,8 +364,9 @@ function App() {
           itemPhotoKeys,
           lentToPhotoKey: lentToPhotoKeys[0],
           lentToPhotoKeys,
-        },
-      ])
+      })
+      setItems(previous => [...previous.filter(i => i.id !== committed.id), committed])
+      newLentId.current = null
       setLentItemName('')
       setLentTo('')
       setLentItemPhotos([])
@@ -355,8 +374,8 @@ function App() {
       setSaveMessage('Lent item saved ✓')
       setTimeout(() => setSaveMessage(''), 3000)
       setShowLendingForm(false)
-    } catch {
-      window.alert('The lent item could not be saved. Please try again.')
+    } catch (error) {
+      window.alert(errorMessage(error) + ' Your draft is still here.')
     } finally {
       savingRef.current = false
       setSaving(false)
@@ -379,10 +398,12 @@ function App() {
           ...photoKeys(item, 'lentTo'),
         ]
         for (const key of keys) {
-          const photo = await getFromDatabase<string>(key)
-          if (photo !== null) photos[key] = photo
+          const photo = await repository.readPhoto(key)
+          if (photo === null) throw new Error('A photo is unavailable.')
+          photos[key] = photo
         }
       }
+      repository.check()
       const backup = {
         version: 2,
         exportedAt: new Date().toISOString(),
@@ -431,8 +452,7 @@ function App() {
       for (const entry of backup.items) {
         if (
           !entry ||
-          typeof entry.id !== 'number' ||
-          !Number.isFinite(entry.id) ||
+          !((typeof entry.id === 'number' && Number.isFinite(entry.id)) || (typeof entry.id === 'string' && entry.id.length > 0)) ||
           typeof entry.name !== 'string' ||
           typeof entry.location !== 'string'
         )
@@ -494,10 +514,18 @@ function App() {
       }
       if (
         !window.confirm(
-          'Restore this backup? Existing items will be kept, and matching items will be updated.',
+          repository.userId ? 'Copy this backup into your account? Existing account items will be kept, and identical copies will be skipped.' : 'Restore this backup? Existing items will be kept, and matching items will be updated.',
         )
       )
         return
+      if (repository.userId) {
+        const available = new Map(writes.map(p => [p.key, p.value]))
+        for (const item of restoredItems)
+          await importItem(repository, item, async key => available.get(key) ?? null)
+        setItems(await repository.load())
+        setRestoreMessage('Backup copied to account ✓')
+        return
+      }
       await updateDatabase(writes)
       // Close stale galleries before showing the restored records.
       openRequest.current++
@@ -512,10 +540,8 @@ function App() {
       })
       setRestoreMessage('Backup restored ✓')
       setTimeout(() => setRestoreMessage(''), 3000)
-    } catch {
-      window.alert(
-        'The backup could not be restored. Please check that you selected the correct file.',
-      )
+    } catch (error) {
+      window.alert(errorMessage(error) + (repository.userId ? ' Completed copies were kept. You can retry safely.' : ' Please check the backup file.'))
     } finally {
       savingRef.current = false
       setSaving(false)
@@ -523,6 +549,21 @@ function App() {
   }
   return (
     <main>
+      <section className="account-panel" aria-label="Account">
+        {accountControls(saving || pendingPhotoOperations > 0)}
+        {repository.userId ? <>
+          <p>Items in your account. Refresh to see changes from your other devices.</p>
+          <div className="account-actions">
+            <button disabled={saving || pendingPhotoOperations > 0} onClick={refreshAccount}>Refresh account items</button>
+            <button disabled={!ready || saving || pendingPhotoOperations > 0} onClick={copyLocalItems}>Copy this browser’s items to my account</button>
+          </div>
+          {cleanupPending && <p role="status">Item changes are saved. Some deleted photo files still need cleanup; use Refresh when online.</p>}
+        </> : <p>Items are saved only in this browser. Sign in to save new items to your account.</p>}
+        {accountError && <p role="alert">{accountError}</p>}
+        {!ready && !accountError && <p role="status">Loading your account items…</p>}
+      </section>
+      <fieldset className="app-content" disabled={!ready || saving}>
+
       <div className="hero">
         <div className="hero-text">
           <h1>Where Did I Put That?</h1>
@@ -973,11 +1014,11 @@ function App() {
                 })
                 .sort((a, b) => {
                   if (sortMode === 'newest') {
-                    return b.id - a.id
+                    return itemTime(b) - itemTime(a)
                   }
 
                   if (sortMode === 'oldest') {
-                    return a.id - b.id
+                    return itemTime(a) - itemTime(b)
                   }
 
                   return a.name.localeCompare(b.name, 'fi', {
@@ -1366,6 +1407,7 @@ function App() {
           </div>
         )}
       </div>
+      </fieldset>
     </main>
   )
 }

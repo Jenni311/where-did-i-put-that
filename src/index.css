@@ -1182,3 +1182,13 @@ button:active {
   border-radius: 16px;
   background: #fffdf9;
 }
+
+/* Account controls keep the existing app palette and form layout. */
+.app-content { border: 0; padding: 0; margin: 0; min-width: 0; }
+.account-panel { padding: 16px; margin-bottom: 28px; background: #fffdf9; border: 1px solid #ddd8d0; border-radius: 16px; }
+.account-panel p { font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
+.account-panel button { font-size: .9rem; padding: 12px; margin: 6px 0; }
+.account-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.account-actions button { flex: 1 1 180px; }
+.account-panel [role="alert"] { color: #9a2525; }
+.account-panel a { color: #326481; text-decoration: underline; }
