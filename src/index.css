@@ -1200,3 +1200,5 @@ button:active {
 .more-options .account-actions button { flex: 0 1 auto; }
 .more-options .account-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .more-options .account-panel p { font-size: .8rem; margin: 8px 0; }
+.more-options .account-actions button { background: #505050; color: #fff; border-color: #505050; }
+.more-options .account-heading button { background: #6098bf; color: #fff; border-color: #6098bf; }
