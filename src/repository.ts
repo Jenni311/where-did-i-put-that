@@ -225,7 +225,7 @@ export async function importItem(repository: Repository, source: StoredItem,
     const existing = await supabase.from('items').select('id')
       .eq('user_id', repository.userId!).eq('id', source.id).maybeSingle()
     if (existing.error) throw existing.error
-    if (existing.data) return
+    if (existing.data) return false
   }
   const photos = [] as { kind: typeof kinds[number]; src: string }[]
   for (const kind of kinds) for (const key of photoKeys(source, kind)) {
@@ -238,7 +238,7 @@ export async function importItem(repository: Repository, source: StoredItem,
   const importKey = 'copy-v1:' + hash
   const { data, error } = await supabase.from('items').select('id').eq('user_id', repository.userId!).eq('import_key', importKey).maybeSingle()
   if (error) throw error
-  if (data) return
+  if (data) return false
   const uuid = (hex: string) => `${hex.slice(0,8)}-${hex.slice(8,12)}-4${hex.slice(13,16)}-a${hex.slice(17,20)}-${hex.slice(20,32)}`
   const item: StoredItem = { id: uuid(hash), name: source.name, location: source.location, lentTo: source.lentTo, importKey }
   for (const kind of kinds) {
@@ -252,4 +252,5 @@ export async function importItem(repository: Repository, source: StoredItem,
     item[`${kind}PhotoKey`] = item[`${kind}PhotoKeys`]?.[0]
   }
   await repository.save(item)
+  return true
 }

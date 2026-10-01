@@ -1192,3 +1192,11 @@ button:active {
 .account-actions button { flex: 1 1 180px; }
 .account-panel [role="alert"] { color: #9a2525; }
 .account-panel a { color: #326481; text-decoration: underline; }
+
+/* Compact account actions in More, with usable touch targets. */
+.more-options .account-panel { text-align: left; margin: 12px 0 18px; padding: 12px 16px; }
+.more-options .account-panel button { width: auto; min-height: 44px; padding: 6px 12px; font-size: .8rem; border-radius: 8px; box-shadow: none; background: transparent; color: #405b4b; border: 1px solid #9ba99e; }
+.more-options .account-actions { gap: 8px; }
+.more-options .account-actions button { flex: 0 1 auto; }
+.more-options .account-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.more-options .account-panel p { font-size: .8rem; margin: 8px 0; }

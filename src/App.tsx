@@ -53,6 +53,7 @@ function App({ repository, accountControls }: { repository: Repository; accountC
   const [editLocationPhotos, setEditLocationPhotos] = useState<Photo[]>([])
   const [editLentToPhotos, setEditLentToPhotos] = useState<Photo[]>([])
   const [showMoreOptions, setShowMoreOptions] = useState(false)
+  const [copyMessage, setCopyMessage] = useState('')
   const [sortMode, setSortMode] = useState<
     'alphabetical' | 'newest' | 'oldest'
   >('alphabetical')
@@ -108,13 +109,17 @@ function App({ repository, accountControls }: { repository: Repository; accountC
   async function copyLocalItems() {
     if (savingRef.current || photoBusyRef.current) return
     if (!window.confirm('Copy this browser’s saved items and photos into this account? The local originals will be kept. Identical previously copied items will be skipped.')) return
-    savingRef.current = true; setSaving(true); setAccountError('')
+    savingRef.current = true; setSaving(true); setAccountError(''); setCopyMessage('Copying local items…')
     try {
-      for (const item of readLocalItems())
-        await importItem(repository, item, key => getFromDatabase<string>(key))
+      const localItems = readLocalItems()
+      let copied = 0
+      for (const item of localItems)
+        if (await importItem(repository, item, key => getFromDatabase<string>(key))) copied++
       setItems(await repository.load())
-      setSaveMessage('Local items copied to your account ✓')
-    } catch (error) { setAccountError(errorMessage(error) + ' You can retry; completed copies will be skipped.') }
+      setCopyMessage(localItems.length === 0
+        ? 'No saved items were found in this browser. Items in the StackBlitz preview or another device stay there until you copy or restore them.'
+        : `${copied} item${copied === 1 ? '' : 's'} copied. ${localItems.length - copied} already in your account. Select View all saved items to see them.`)
+    } catch (error) { setCopyMessage(''); setAccountError(errorMessage(error) + ' You can retry; completed copies will be skipped.') }
     finally { savingRef.current = false; setSaving(false) }
   }
 
@@ -547,21 +552,27 @@ function App({ repository, accountControls }: { repository: Repository; accountC
       setSaving(false)
     }
   }
-  return (
-    <main>
+  const accountPanel = (
       <section className="account-panel" aria-label="Account">
         {accountControls(saving || pendingPhotoOperations > 0)}
         {repository.userId ? <>
           <p>Items in your account. Refresh to see changes from your other devices.</p>
           <div className="account-actions">
-            <button disabled={saving || pendingPhotoOperations > 0} onClick={refreshAccount}>Refresh account items</button>
-            <button disabled={!ready || saving || pendingPhotoOperations > 0} onClick={copyLocalItems}>Copy this browser’s items to my account</button>
+            <button disabled={saving || pendingPhotoOperations > 0} onClick={refreshAccount}>Refresh items</button>
+            <button disabled={!ready || saving || pendingPhotoOperations > 0} onClick={copyLocalItems}>{saving ? 'Please wait…' : 'Copy local items'}</button>
           </div>
+          {copyMessage && <p role="status">{copyMessage}</p>}
           {cleanupPending && <p role="status">Item changes are saved. Some deleted photo files still need cleanup; use Refresh when online.</p>}
         </> : <p>Items are saved only in this browser. Sign in to save new items to your account.</p>}
         {accountError && <p role="alert">{accountError}</p>}
         {!ready && !accountError && <p role="status">Loading your account items…</p>}
       </section>
+  )
+  return (
+    <main>
+      {!repository.userId && accountPanel}
+      {repository.userId && accountError && <p role="alert">{accountError} Open More… to retry refreshing your account.</p>}
+      {repository.userId && !ready && !accountError && <p role="status">Loading your account items…</p>}
       <fieldset className="app-content" disabled={!ready || saving}>
 
       <div className="hero">
@@ -1349,6 +1360,7 @@ function App({ repository, accountControls }: { repository: Repository; accountC
         </div>
       )}
 
+      </fieldset>
       <div className="more-options">
         <button
           type="button"
@@ -1359,6 +1371,8 @@ function App({ repository, accountControls }: { repository: Repository; accountC
         </button>
 
         {showMoreOptions && (
+          <>
+          {repository.userId && accountPanel}
           <div className="data-buttons">
             <button
               type="button"
@@ -1405,9 +1419,9 @@ function App({ repository, accountControls }: { repository: Repository; accountC
               />
             </label>
           </div>
+          </>
         )}
       </div>
-      </fieldset>
     </main>
   )
 }
