@@ -445,7 +445,7 @@ button:active {
   padding: 6px 12px;
 
   background: transparent;
-  color: #111827;;
+  color: #58675d;;
 
   border: 0;
   box-shadow: none;
@@ -457,7 +457,7 @@ button:active {
 }
 
 .more-options .more-button {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #738478;
 }
 
