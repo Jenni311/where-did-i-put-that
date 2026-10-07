@@ -756,7 +756,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
             setShowLendingForm(false)
 
             setTimeout(() => {
-              document.getElementById('remember-form')?.scrollIntoView({
+              document.getElementById('remember-section-toggle')?.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
               })
@@ -860,7 +860,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
                 setShowAll(false)
 
                 setTimeout(() => {
-                  document.getElementById('lending-form')?.scrollIntoView({
+                  document.getElementById('lending-section-toggle')?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start',
                   })

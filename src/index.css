@@ -1222,3 +1222,15 @@ button:active {
   border: 1px solid #9a2525;
   min-height: 44px;
 }
+#lending-form {
+  margin-top: 12px;
+  padding: 20px 16px;
+  border-radius: 16px;
+  background: #fffdf9;
+  text-align: left;
+}
+
+#remember-section-toggle,
+#lending-section-toggle {
+  scroll-margin-top: 16px;
+}
