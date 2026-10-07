@@ -12,6 +12,8 @@ export default function AccountApp() {
   const [working, setWorking] = useState(false)
   const [email, setEmail] = useState('')
   const [emailSent, setEmailSent] = useState(false)
+  const [deletionMessage, setDeletionMessage] = useState('')
+  const [deleting, setDeleting] = useState(false)
   useEffect(() => {
     let active = true
     let authEvent = false
@@ -50,6 +52,33 @@ export default function AccountApp() {
     } catch (error) { setError(errorMessage(error)) }
     finally { setWorking(false) }
   }
+  async function deleteAccount() {
+    if (!session || deleting || working) return
+    const confirmation = window.prompt(
+      `Permanently delete the account ${session.user.email ?? ''} and all its cloud items and photos?\n\nThis cannot be undone. Save a backup first if you want to keep a copy. Files you downloaded and items saved only in a browser will remain there. Your Google account will not be deleted.\n\nType DELETE to confirm.`,
+    )
+    if (confirmation !== 'DELETE') return
+    setDeleting(true); setWorking(true); setError('')
+    setDeletionMessage('Deleting your account and cloud data…')
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-account', { body: { confirmation: 'DELETE' } })
+      if (error) {
+        let message = 'Deletion could not finish. Open More… and use Delete my account and data again to retry.'
+        if ('context' in error && error.context instanceof Response) {
+          try { message = (await error.context.json()).message || message } catch { /* Preserve the useful fallback. */ }
+        }
+        throw new Error(message)
+      }
+      if (data?.pending) { setDeletionMessage(data.message); return }
+      if (!data?.deleted) throw new Error('Deletion was not confirmed. Please retry.')
+      await supabase.auth.signOut({ scope: 'local' })
+      setSession(null)
+      setEmail(''); setEmailSent(false)
+      setDeletionMessage('Your account and cloud data have been deleted. Any browser-only items and downloaded backups are still on their devices.')
+    } catch (error) {
+      setDeletionMessage(''); setError(errorMessage(error))
+    } finally { setDeleting(false); setWorking(false) }
+  }
   async function signInWithEmail(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const address = email.trim()
@@ -85,6 +114,11 @@ export default function AccountApp() {
       </form>
     </div> :
       <p>To sign in, open the <a href={productionUrl} target="_blank" rel="noreferrer">published app</a>. Preview items stay in this preview browser.</p>}
+    {session && <button type="button" disabled={busy || working} onClick={deleteAccount}
+      style={{ color: '#9a2525', borderColor: '#9a2525', minHeight: 44 }}>
+      {deleting ? 'Deleting account…' : 'Delete my account and data'}
+    </button>}
+    {deletionMessage && <p role="status">{deletionMessage}</p>}
     {error && <p role="alert">{error}</p>}
   </>} />
 }
