@@ -11,7 +11,7 @@ function SectionClose({ label, disabled, onClick }: { label: string; disabled: b
   return <button type="button" className="collapse-item-button" aria-label={label}
     disabled={disabled} onClick={onClick}
     style={{ width: 'auto', minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '4px 12px' }}>
-    <span aria-hidden="true">⌃</span><span style={{ fontSize: '.85rem' }}>Close</span>
+    <span aria-hidden="true">⌃</span>
   </button>
 }
 function App({ repository, accountControls, accountDeletionControls }: { repository: Repository; accountControls: (busy: boolean) => React.ReactNode; accountDeletionControls?: (busy: boolean) => React.ReactNode }) {
