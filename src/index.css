@@ -1215,3 +1215,10 @@ button:active {
 .email-sign-in input { flex: 1 1 220px; min-width: 0; margin-top: 0; padding: 10px 12px; border: 1px solid #c7c9c7; border-radius: 8px; font: inherit; }
 .email-sign-in button { flex: 0 0 auto; background: #505050; color: #fff; border-color: #505050; }
 .email-sent { color: #405b4b; font-weight: 700; }
+
+.more-options .account-actions .delete-account-button {
+  background: transparent;
+  color: #9a2525;
+  border: 1px solid #9a2525;
+  min-height: 44px;
+}

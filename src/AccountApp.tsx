@@ -117,7 +117,7 @@ export default function AccountApp() {
     {deletionMessage && <p role="status">{deletionMessage}</p>}
     {error && <p role="alert">{error}</p>}
   </>} accountDeletionControls={busy => session && <button type="button" disabled={busy || working} onClick={deleteAccount}
-      style={{ color: '#9a2525', borderColor: '#9a2525', minHeight: 44 }}>
+      className="delete-account-button">
       {deleting ? 'Deleting account…' : 'Delete my account and data'}
     </button>} />
 }
