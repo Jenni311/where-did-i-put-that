@@ -6,6 +6,14 @@ import type { StoredItem } from './repository'
 import type { Photo } from './photos'
 import { deleteFromDatabase, getFromDatabase, updateDatabase } from './db'
 import blackCatHero2 from './assets/black-cat-hero-2.png'
+
+function SectionClose({ label, disabled, onClick }: { label: string; disabled: boolean; onClick: () => void }) {
+  return <button type="button" className="collapse-item-button" aria-label={label}
+    disabled={disabled} onClick={onClick}
+    style={{ width: 'auto', minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '4px 12px' }}>
+    <span aria-hidden="true">⌃</span><span style={{ fontSize: '.85rem' }}>Close</span>
+  </button>
+}
 function App({ repository, accountControls, accountDeletionControls }: { repository: Repository; accountControls: (busy: boolean) => React.ReactNode; accountDeletionControls?: (busy: boolean) => React.ReactNode }) {
   const storePhotos = (photos: Photo[]) => repository.stage(photos)
   const loadPhotos = (keys: string[]) => Promise.all(keys.map(async id => ({ id, src: await repository.readPhoto(id) })))
@@ -182,6 +190,26 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
     setOpenLentToPhotos([])
     setLoadingPhotos(false)
     resetEdit()
+  }
+
+  function closeSection(section: 'remember' | 'lending' | 'all') {
+    if (savingRef.current || photoBusyRef.current) return
+    if (section === 'remember') setShowRememberForm(false)
+    if (section === 'lending') setShowLendingForm(false)
+    if (section === 'all') {
+      closeItem()
+      setShowAll(false)
+      setItemCategory('all')
+    }
+    // Keep unsaved form contents, as the existing Hide buttons do.
+    requestAnimationFrame(() => {
+      const opener = document.getElementById(`${section}-section-toggle`)
+      opener?.focus({ preventScroll: true })
+      opener?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'center',
+      })
+    })
   }
 
   async function toggleItem(item: StoredItem, scroll = false) {
@@ -585,7 +613,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
   return (
     <main>
       {!repository.userId && accountPanel}
-      {repository.userId && accountError && <p role="alert">{accountError} Open More… to retry refreshing your account.</p>}
+      {repository.userId && accountError && <p role="alert">{accountError} Open Settings &amp; backup to retry refreshing your account.</p>}
       {repository.userId && !ready && !accountError && <p role="status">Loading your account items…</p>}
       <fieldset className="app-content" disabled={!ready || saving}>
 
@@ -714,6 +742,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
         </div>
       )}
       <button
+        id="remember-section-toggle"
         className="remember-button"
         disabled={saving || pendingPhotoOperations > 0}
         onClick={() => {
@@ -799,7 +828,9 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
             onClick={saveItem}
           >
             Save item
-          </button>{' '}
+          </button>
+          <SectionClose label="Close save item form" disabled={saving || pendingPhotoOperations > 0 || isRememberFormClosing}
+            onClick={() => closeSection('remember')} />
         </div>
       )}
 
@@ -808,6 +839,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
           <button
             type="button"
             className="more-button"
+            id="lending-section-toggle"
             style={{
               background: 'transparent',
               border: 0,
@@ -913,6 +945,8 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
               >
                 Save lent item
               </button>
+              <SectionClose label="Close lending form" disabled={saving || pendingPhotoOperations > 0}
+                onClick={() => closeSection('lending')} />
             </form>
           )}
         </div>
@@ -920,6 +954,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
       {saveMessage && <div className="save-message">{saveMessage}</div>}
       {restoreMessage && <div className="save-message">{restoreMessage}</div>}
       <button
+        id="all-section-toggle"
         className="view-all-button"
         disabled={saving || pendingPhotoOperations > 0}
         onClick={() => {
@@ -1371,6 +1406,8 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
                 ))}
             </div>
           )}
+          <SectionClose label="Close all saved items" disabled={saving || pendingPhotoOperations > 0}
+            onClick={() => closeSection('all')} />
         </div>
       )}
 
@@ -1382,7 +1419,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
           aria-expanded={showMoreOptions}
           onClick={() => setShowMoreOptions(!showMoreOptions)}
         >
-          {showMoreOptions ? 'Less…' : 'More…'}
+          {showMoreOptions ? 'Hide settings' : 'Settings & backup'}
         </button>
 
         {showMoreOptions && (

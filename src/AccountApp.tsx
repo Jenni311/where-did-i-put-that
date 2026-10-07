@@ -63,7 +63,7 @@ export default function AccountApp() {
     try {
       const { data, error } = await supabase.functions.invoke('delete-account', { body: { confirmation: 'DELETE' } })
       if (error) {
-        let message = 'Deletion could not finish. Open More… and use Delete my account and data again to retry.'
+        let message = 'Deletion could not finish. Open Settings & backup and use Delete my account and data again to retry.'
         if ('context' in error && error.context instanceof Response) {
           try { message = (await error.context.json()).message || message } catch { /* Preserve the useful fallback. */ }
         }
