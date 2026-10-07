@@ -1434,7 +1434,7 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
               />
             </label>
           </div>
-          {repository.userId && accountDeletionControls && <div className="account-actions" style={{ justifyContent: 'flex-start', marginTop: 16 }}>
+          {repository.userId && accountDeletionControls && <div className="account-actions" style={{ justifyContent: 'center', marginTop: 16 }}>
             {accountDeletionControls(saving || pendingPhotoOperations > 0)}
           </div>}
           </>
