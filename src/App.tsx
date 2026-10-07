@@ -6,7 +6,7 @@ import type { StoredItem } from './repository'
 import type { Photo } from './photos'
 import { deleteFromDatabase, getFromDatabase, updateDatabase } from './db'
 import blackCatHero2 from './assets/black-cat-hero-2.png'
-function App({ repository, accountControls }: { repository: Repository; accountControls: (busy: boolean) => React.ReactNode }) {
+function App({ repository, accountControls, accountDeletionControls }: { repository: Repository; accountControls: (busy: boolean) => React.ReactNode; accountDeletionControls?: (busy: boolean) => React.ReactNode }) {
   const storePhotos = (photos: Photo[]) => repository.stage(photos)
   const loadPhotos = (keys: string[]) => Promise.all(keys.map(async id => ({ id, src: await repository.readPhoto(id) })))
   const [ready, setReady] = useState(!repository.userId)
@@ -574,6 +574,9 @@ function App({ repository, accountControls }: { repository: Repository; accountC
           <div className="account-actions">
             <button disabled={saving || pendingPhotoOperations > 0} onClick={refreshAccount}>Refresh items</button>
             <button disabled={!ready || saving || pendingPhotoOperations > 0} onClick={copyLocalItems}>{saving ? 'Please wait…' : 'Copy local items'}</button>
+            {accountDeletionControls && <div style={{ marginLeft: 'auto', alignSelf: 'flex-end' }}>
+              {accountDeletionControls(saving || pendingPhotoOperations > 0)}
+            </div>}
           </div>
           {copyMessage && <p role="status">{copyMessage}</p>}
           {cleanupPending && <p role="status">Item changes are saved. Some deleted photo files still need cleanup; use Refresh when online.</p>}

@@ -114,11 +114,10 @@ export default function AccountApp() {
       </form>
     </div> :
       <p>To sign in, open the <a href={productionUrl} target="_blank" rel="noreferrer">published app</a>. Preview items stay in this preview browser.</p>}
-    {session && <button type="button" disabled={busy || working} onClick={deleteAccount}
-      style={{ color: '#9a2525', borderColor: '#9a2525', minHeight: 44 }}>
-      {deleting ? 'Deleting account…' : 'Delete my account and data'}
-    </button>}
     {deletionMessage && <p role="status">{deletionMessage}</p>}
     {error && <p role="alert">{error}</p>}
-  </>} />
+  </>} accountDeletionControls={busy => session && <button type="button" disabled={busy || working} onClick={deleteAccount}
+      style={{ color: '#9a2525', borderColor: '#9a2525', minHeight: 44 }}>
+      {deleting ? 'Deleting account…' : 'Delete my account and data'}
+    </button>} />
 }
