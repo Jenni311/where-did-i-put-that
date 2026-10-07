@@ -53,6 +53,20 @@ function App({ repository, accountControls }: { repository: Repository; accountC
   const [editLocationPhotos, setEditLocationPhotos] = useState<Photo[]>([])
   const [editLentToPhotos, setEditLentToPhotos] = useState<Photo[]>([])
   const [showMoreOptions, setShowMoreOptions] = useState(false)
+  const moreOptionsRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!showMoreOptions) return
+    const frame = requestAnimationFrame(() => {
+      const controls = moreOptionsRef.current
+      if (!controls) return
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      controls.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: controls.getBoundingClientRect().height > window.innerHeight ? 'start' : 'nearest',
+      })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [showMoreOptions])
   const [copyMessage, setCopyMessage] = useState('')
   const [sortMode, setSortMode] = useState<
     'alphabetical' | 'newest' | 'oldest'
@@ -1361,10 +1375,11 @@ function App({ repository, accountControls }: { repository: Repository; accountC
       )}
 
       </fieldset>
-      <div className="more-options">
+      <div className="more-options" ref={moreOptionsRef}>
         <button
           type="button"
           className="more-button"
+          aria-expanded={showMoreOptions}
           onClick={() => setShowMoreOptions(!showMoreOptions)}
         >
           {showMoreOptions ? 'Less…' : 'More…'}
