@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="How Where Did I Put That? uses and stores your data." />
+  <title>Privacy — Where Did I Put That?</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #faf7f1; color: #303a43; font: 17px/1.65 system-ui, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 32px 24px 56px; }
+    h1 { color: #402823; font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1.15; margin: 24px 0 12px; }
+    h2 { color: #405b4b; font-size: 1.25rem; margin-top: 30px; line-height: 1.35; }
+    p, ul { margin: 12px 0; }
+    ul { padding-left: 22px; }
+    li { margin-bottom: 8px; }
+    a { color: #326481; text-underline-offset: 3px; overflow-wrap: anywhere; }
+    a:focus-visible { outline: 3px solid #326481; outline-offset: 4px; }
+    .date { font-size: .9rem; color: #746b63; }
+    .summary { padding: 16px 20px; background: #fffdf9; border: 1px solid #ddd8d0; border-radius: 16px; margin: 24px 0; }
+    footer { border-top: 1px solid #ddd8d0; margin-top: 32px; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="./">← Back to the app</a>
+    <h1>Privacy</h1>
+    <p>Where Did I Put That?</p>
+    <p class="date">Last updated: 7 October 2026</p>
+    <div class="summary">
+      <p>Without signing in, your saved items stay in your browser. When signed in, new items and photos are saved to your account so you can access them on other devices.</p>
+    </div>
+
+    <h2>What is stored</h2>
+    <ul>
+      <li><strong>Account information:</strong> your email address, account ID, and sign-in details. Google sign-in may also provide your name and profile picture.</li>
+      <li><strong>Your saved content:</strong> item names, locations, who you lent things to, photos you add, and dates associated with saving and updating items.</li>
+      <li><strong>Support messages:</strong> information you send when contacting support.</li>
+    </ul>
+    <p>This information is used to sign you in, save and retrieve your items, show your photos, and respond to support requests. The app does not request access to your Gmail inbox or Google Drive.</p>
+
+    <h2>Local and cloud storage</h2>
+    <p>Items saved while signed out are stored on that browser or device. Clearing browser data can remove them. Signing in does not automatically copy those items to your account; use “Copy local items” or restore a backup if you want to transfer them.</p>
+    <p>Supabase provides account sign-in, the cloud database, and photo storage. Account data and photos are restricted to their owner through access controls. The app operator and service providers may have administrative access needed to operate and support the service.</p>
+    <p>The browser stores sign-in information to keep you signed in and caches app files so the app can load. The app currently includes no advertising or analytics trackers.</p>
+
+    <h2>Services used by the app</h2>
+    <p>GitHub Pages hosts the app. Supabase provides cloud storage and authentication. Google is used when you choose Google sign-in, and Gmail receives support messages. These providers may process technical information, such as IP addresses and request logs, to deliver and secure their services.</p>
+    <p>Learn about their practices: <a href="https://supabase.com/privacy">Supabase</a>, <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>, and <a href="https://policies.google.com/privacy">Google</a>.</p>
+
+    <h2>Photos and other people's information</h2>
+    <p>The app only uploads photos you choose to add or take. Photos may contain information such as faces, addresses, or location details. Only add information about other people that you have permission or another appropriate reason to store.</p>
+
+    <h2>Backups, keeping and deleting data</h2>
+    <p>Your saved cloud items remain in your account until you remove them or delete your account. Photo-file cleanup may need a retry if a request is interrupted. Browser-only items stay on that device until removed or browser data is cleared.</p>
+    <p>Use Backup under More… to download a copy of your items and photos. Keep that file somewhere safe: anyone who can open it can read its contents.</p>
+    <p>“Delete my account and data” removes your account and its active cloud items and photo files. It does not delete your Google account, downloaded backups, or browser-only items on your devices. If deletion is interrupted, retry to finish it.</p>
+    <p>A marker containing the deleted account's ID is retained to block old sign-in tokens. Existing service logs and infrastructure backups may retain information for their applicable retention periods.</p>
+
+    <h2>Your choices and contact</h2>
+    <p>You can use the app without signing in, edit or delete individual items, export a backup, sign out, or delete your account. For questions about your information, or to request access, correction, or deletion, contact <a href="mailto:wheredidiputthat.support@gmail.com">wheredidiputthat.support@gmail.com</a>.</p>
+    <footer><a href="./">Back to Where Did I Put That?</a></footer>
+  </main>
+</body>
+</html>

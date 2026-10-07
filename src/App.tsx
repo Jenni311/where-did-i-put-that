@@ -1440,6 +1440,10 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
           </>
         )}
       </div>
+      <p style={{ textAlign: 'center', marginTop: 16 }}>
+        <a href={`${import.meta.env.BASE_URL}privacy.html`} target="_blank" rel="noopener noreferrer"
+          style={{ color: '#326481', fontSize: '.85rem', textDecoration: 'underline' }}>Privacy</a>
+      </p>
     </main>
   )
 }
