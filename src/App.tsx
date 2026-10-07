@@ -570,7 +570,7 @@ function App({ repository, accountControls }: { repository: Repository; accountC
       <section className="account-panel" aria-label="Account">
         {accountControls(saving || pendingPhotoOperations > 0)}
         {repository.userId ? <>
-          <p>Items in your account. Refresh to see changes from your other devices.</p>
+          <p>Your items are saved to your account. Tap “Refresh items” to see updates from other devices.</p>
           <div className="account-actions">
             <button disabled={saving || pendingPhotoOperations > 0} onClick={refreshAccount}>Refresh items</button>
             <button disabled={!ready || saving || pendingPhotoOperations > 0} onClick={copyLocalItems}>{saving ? 'Please wait…' : 'Copy local items'}</button>
