@@ -445,7 +445,7 @@ button:active {
   padding: 6px 12px;
 
   background: transparent;
-  color: #738478;;
+  color: #111827;;
 
   border: 0;
   box-shadow: none;
@@ -454,6 +454,11 @@ button:active {
   font-weight: 700;
 
   cursor: pointer;
+}
+
+.more-options .more-button {
+  font-size: 0.95rem;
+  color: #738478;
 }
 
 .more-button:hover {
