@@ -574,9 +574,6 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
           <div className="account-actions">
             <button disabled={saving || pendingPhotoOperations > 0} onClick={refreshAccount}>Refresh items</button>
             <button disabled={!ready || saving || pendingPhotoOperations > 0} onClick={copyLocalItems}>{saving ? 'Please wait…' : 'Copy local items'}</button>
-            {accountDeletionControls && <div style={{ marginLeft: 'auto', alignSelf: 'flex-end' }}>
-              {accountDeletionControls(saving || pendingPhotoOperations > 0)}
-            </div>}
           </div>
           {copyMessage && <p role="status">{copyMessage}</p>}
           {cleanupPending && <p role="status">Item changes are saved. Some deleted photo files still need cleanup; use Refresh when online.</p>}
@@ -1437,6 +1434,9 @@ function App({ repository, accountControls, accountDeletionControls }: { reposit
               />
             </label>
           </div>
+          {repository.userId && accountDeletionControls && <div className="account-actions" style={{ justifyContent: 'flex-start', marginTop: 16 }}>
+            {accountDeletionControls(saving || pendingPhotoOperations > 0)}
+          </div>}
           </>
         )}
       </div>
